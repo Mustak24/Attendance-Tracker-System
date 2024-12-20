@@ -9,6 +9,7 @@ import verifyUserToken from "@/Functions/verifyUserToken";
 import getAttendenceStatus from '@/Functions/getAttendenceStatus'
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
+import { TypingHeading } from "@/Components/Heading";
 
 
 
@@ -22,7 +23,7 @@ export default function Home() {
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setLoading] = useState(false);
 
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState('05:30:00 AM');
 
 
   async function handleAttendence(){
@@ -75,7 +76,7 @@ export default function Home() {
           <div className="text-white self-start">
             <div className="font-serif transition-all text-4xl md:text-7xl font-semibold">
               <div className="">Hello,</div>
-              <div className="capitalize">{userInfo.name}</div>
+              <TypingHeading className="capitalize" speed={120}>{userInfo.name}</TypingHeading>
             </div>
 
             <div className="mt-5 h-2 rounded-sm" 
@@ -84,15 +85,15 @@ export default function Home() {
 
             <div className="max-sm:mt-2 mt-5 flex flex-col gap-1">
               <div className="text-[3vmax] font-sans font-semibold">Your today attendence Status is,</div>
-              <div className="capitalize w-fit text-white font-semibold">
+              <div className="capitalize relative w-fit text-white font-semibold h-6 [&_div]:rounded-md [&_div]:px-4 [&_div]:py-1 after:content-[''] after:absolute after:z-[1] after:size-3 after:bg-slate-100 after:box-content after:border-[4px] after:border-blue-400 after:top-1 after:right-1 after:rounded-full after:translate-x-[50%] after:translate-y-[-50%] before:content-[''] before:z-[10] before:absolute before:size-4 before:bg-slate-100 before:top-1 before:right-1 before:rounded-full before:translate-x-[50%] before:translate-y-[-50%] before:animate-ping before:origin-[0%_100%]">
                 <ShowIf when={attendence == 'not marked'}>
-                  <div className="bg-zinc-500 rounded-md px-2">Not Marked</div>
+                  <div className="bg-zinc-500">Not Marked</div>
                 </ShowIf>
                 <ShowIf when={attendence == 'present'}>
-                  <div className="bg-green-500 rounded-md px-2">Present</div>
+                  <div className="bg-green-400">Present</div>
                 </ShowIf>
                 <ShowIf when={attendence == 'absent'}>
-                  <div className="bg-red-500 rounded-md px-2">Absent</div>
+                  <div className="bg-red-500">Absent</div>
                 </ShowIf>
               </div>
             </div>
@@ -103,15 +104,15 @@ export default function Home() {
 
             <div className="mt-5 text-[3vmax] font-sans font-semibold flex items-center gap-2 flex-wrap  ">
               <div className="text-sm">
-                <Button isLoading={isLoading} onClick={()=>handleAttendence()}>Click For</Button>
+                <Button className="animate-bounce top-2" isLoading={isLoading} onClick={()=>handleAttendence()}>Click For</Button>
               </div>
               <p>Mark Present,</p>
-              <div>{time}</div>
+              <div className="">{time}</div>
             </div>
 
             <div className="mt-5 rounded-sm text-zinc-800 px-2 text-xs font-semibold font-mono"  
               style={{backgroundImage: 'linear-gradient(90deg, white, transparent)'}}>
-                Attendece will be Marke Between 8:00 PM to 9:00 PM
+                <TypingHeading>Attendece will be Marke Between 8:00 PM to 9:00 PM</TypingHeading>
             </div>
 
           </div>

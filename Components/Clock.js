@@ -50,7 +50,7 @@ export default function Clock(){
                 }
             </div>
 
-            <div className="clock-day-display absolute text-white text-md font-mono font-semibold px-2 h-6 flex items-center justify-center -translate-y-[200%] rounded-md text-sm">
+            <div className="clock-day-display absolute border-2 text-white text-md font-mono font-semibold px-2 h-6 flex items-center justify-center -translate-y-[200%] rounded-md text-sm animate-pe">
                 <TypingHeading speed={200}>
                     {clockDay.split('/').join(' / ')}
                 </TypingHeading>
@@ -60,17 +60,17 @@ export default function Clock(){
 
             <div 
                 style={{rotate: `${clockSecPin}deg`}} 
-                className="absolute w-[50%] border-[3px] border-white opacity-50 rounded-[0%_50%_50%_0%] translate-x-[50%]">
+                className="absolute w-[50%] border-[3px] border-slate-50 opacity-90 rounded-[0%_50%_50%_0%] translate-x-[50%]">
             </div>
 
             <div 
                 style={{rotate: `${clockMinPin}deg`}} 
-                className="absolute w-[40%] border-[3px] border-white opacity-50 rounded-[0%_50%_50%_0%] translate-x-[50%]">
+                className="absolute w-[40%] border-[3px] border-slate-50 opacity-90 rounded-[0%_50%_50%_0%] translate-x-[50%]">
             </div>
             
             <div 
                 style={{rotate: `${clockHrPin}deg`}} 
-                className="absolute w-[30%] border-[3px] border-white opacity-50 rounded-[0%_50%_50%_0%] translate-x-[50%]">
+                className="absolute w-[30%] border-[3px] border-slate-50 opacity-90 rounded-[0%_50%_50%_0%] translate-x-[50%]">
             </div>
         
       
