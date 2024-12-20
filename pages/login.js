@@ -8,6 +8,7 @@ import { isObjectEmpty, isOnline } from "@/Functions/miniFuntions";
 import ShowIf from "@/Components/ShowIf";
 import verifyUserToken from "@/Functions/verifyUserToken";
 
+
 export default function Login(){
 
     const {setAlert} = useContext(_AppContext)
@@ -48,7 +49,7 @@ export default function Login(){
 
     useEffect(() => {
         let token = localStorage.getItem('user-token');
-        if(!token) return;
+        if(!token) return setLoad(true);
         verifyUserToken(token).then(res => {
             setLoad(true);
             if(res.miss) return router.push('/')
@@ -56,20 +57,20 @@ export default function Login(){
     })
 
     return (
-        <ShowIf when={isLoad} loading={true}>
-            <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden">
-                <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
+        <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden">
+            <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
+                <ShowIf when={isLoad} loading={true}>
                     <TypingHeading className="font-serif text-2xl my-5">- Login Form -</TypingHeading>
                     <form onSubmit={handleSubmit} className="flex items-center flex-col gap-4 max-w-[500px] w-full" >
-                        <Input minLength={2} name={'username'} placeholder="Enter Username" />
-                        <Input minLength={5} name={'password'} placeholder="Enter Password" type='password' />
+                        <Input minLength={6} name={'username'} placeholder="Enter Username" />
+                        <Input minLength={6} name={'password'} placeholder="Enter Password" type='password' />
                         <div className="w-full">
                             <LongWidthBnt isLoading={isLoading} title='Login' className='w-full max-md:hidden' />
                             <Button isLoading={isLoading} title='Login' className='md:hidden w-full border-2' />
                         </div>
                     </form>
-                </main>
-            </div>
-        </ShowIf>
+                </ShowIf>
+            </main>
+        </div>
     )
 }

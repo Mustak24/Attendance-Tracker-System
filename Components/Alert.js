@@ -5,7 +5,7 @@ import { useContext, useEffect, useRef } from "react"
 export default function Alert() {
     const {alerts} = useContext(_AppContext)
     
-    return (<div className="flex flex-col-reverse h-[80vh] w-fit overflow-y-scroll overflow-x-visible [&_div]:shrink-0 gap-1 absolute bottom-[50px] left-2 z-[1000] cursor-default">
+    return (<div className="flex flex-col-reverse h-fit w-fit overflow-y-scroll overflow-x-visible [&_div]:shrink-0 gap-1 absolute bottom-[50px] left-2 z-[1000] cursor-default">
         {(alerts || []).map((alert, i) => <AlertCard key={i} info={alert} />)}
     </div>)
 }
@@ -20,7 +20,7 @@ export function AlertCard({info}) {
         error: { afterBorder: 'after:border-red-500', text: 'text-red-500', bg: 'bg-[rgb(239,68,68,.1)]' },
     }
     useEffect(() => {
-        if(!alertBox.current) return ()=>{};
+        if(!alertBox.current) return;
         setTimeout(() => {
             alertBox.current.classList.replace('opacity-0', 'opacity-1')
             alertBox.current.classList.replace('scale-[.8]', 'scale-1')
