@@ -9,12 +9,16 @@ export default function AppContextProvider({children}){
 
     const states = {
         test, setTest,
-        alerts, setAlert
+        alerts, setAlert,
     }
 
     useEffect(() => {
-        window.ononline = () => setAlert(() => [...alerts ,{msg: 'Conection is come back', type: 'success'}]) 
-        window.onoffline = () => setAlert(() => [...alerts, {type: 'error', msg: 'Connection is lose'}])
+        window.ononline = () => {
+            setAlert(() => [...alerts ,{msg: 'Conection is come back', type: 'success'}])
+        } 
+        window.onoffline = () => {
+            setAlert(() => [...alerts, {type: 'error', msg: 'Connection is lose'}])
+        }
     }, [])
 
 
