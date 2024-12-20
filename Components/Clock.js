@@ -56,7 +56,7 @@ export default function Clock(){
                 </TypingHeading>
             </div>  
 
-            <div className="absolute clock-center-bot aspect-square w-2 rounded-full bg-white"></div>
+            <div className="absolute clock-center-bot aspect-square w-[9px] rounded-full bg-white after:content-[''] after:absolute after:size-full after:bg-white after:animate-ping after:rounded-full"></div>
 
             <div 
                 style={{rotate: `${clockSecPin}deg`}} 

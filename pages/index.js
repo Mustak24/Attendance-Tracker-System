@@ -4,7 +4,7 @@ import Clock from "@/Components/Clock";
 import ShowIf from "@/Components/ShowIf";
 import { _AppContext } from "@/Contexts/AppContext";
 import markAttendence from "@/Functions/markAttendence";
-import { isOnline } from "@/Functions/miniFuntions";
+import { getTime, isOnline } from "@/Functions/miniFuntions";
 import verifyUserToken from "@/Functions/verifyUserToken";
 import getAttendenceStatus from '@/Functions/getAttendenceStatus'
 import { useRouter } from "next/router";
@@ -59,7 +59,7 @@ export default function Home() {
     })
 
     let interval = setInterval(() => {
-      setTime(new Date().toLocaleTimeString())
+      setTime(getTime())
     }, 1000);
 
     return ()=>clearInterval(interval);
@@ -107,7 +107,7 @@ export default function Home() {
                 <Button className="animate-bounce top-2" isLoading={isLoading} onClick={()=>handleAttendence()}>Click For</Button>
               </div>
               <p>Mark Present,</p>
-              <div className="">{time}</div>
+              <div>{time}</div>
             </div>
 
             <div className="mt-5 rounded-sm text-zinc-800 px-2 text-xs font-semibold font-mono"  
