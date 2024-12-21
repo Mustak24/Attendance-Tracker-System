@@ -31,7 +31,7 @@ export default function Login(){
 
         setLoading(true);
 
-        let res = await fetch(`${window.location.origin}/api/users/login`, {
+        let res = await fetch(`${window.location.origin}/api/warden/login`, {
             method: 'POST',
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(formData)
@@ -59,6 +59,13 @@ export default function Login(){
 
     return (
         <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden text-white">
+            <div 
+                className="absolute flex flex-col top-4 left-4 text-[2vmax] font-bold cursor-default z-[100]"
+                onClick={() => router.push('/login')}
+            >
+                Welcome,
+                <div className="text-[3em]">Warden</div>
+            </div>
             <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
                 <ShowIf when={isLoad} loading={true}>
                     <TypingHeading className="font-serif text-2xl my-5">- Login Form -</TypingHeading>

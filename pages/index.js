@@ -39,7 +39,7 @@ export default function Home() {
     setAlert((alerts) => [...alerts, alert]);
 
     return getAttendenceStatus(token).then(({attendenceStatus}) => {
-        setAttendenceStatus(attendenceStatus || 'error!');
+        setAttendenceStatus(attendenceStatus || 'Not Set');
     })
   }
 
@@ -48,24 +48,29 @@ export default function Home() {
     return router.push('/login');
   }
 
-
-
-  useEffect(async () => {
+  async function verifyUser(){
     let token = localStorage.getItem('user-token');
-    if(!token) return router.push('/signup');
+    if(!token) return router.push('/login')
 
     let res = await verifyUserToken(token);
-    if(!res.miss) return router.push('/signup');
+    if(!res.miss) return router.push('/login');
 
     setLoad(true);
     setUserInfo(res.user)
     handleAttendence()
+  }
+
+
+
+  useEffect(() => {
+
+    verifyUser();
     
     const interval = setInterval(() => {
       setTime(getTime())
     }, 1000);
     
-    return () => {clearInterval(interval)};
+    return () => clearInterval(interval);
 
   }, []);
 

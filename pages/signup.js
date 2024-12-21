@@ -40,17 +40,19 @@ export default function Login(){
         });
         let {miss, alert} = await res.json();
         setLoading(false)
+        
         setAlert((alerts) => [...alerts, alert])
         if(miss) return router.push('/login')
     }
 
     return (
         <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden text-white">
+            <div className="absolute top-4 left-4 text-[6vmax] font-bold cursor-default z-[100]" onClick={()=>router.push('/warden/signup')}>Hello,</div>
             <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
                 <TypingHeading className="font-serif text-2xl my-5">- SignUp Form -</TypingHeading>
                 <form onSubmit={handleSubmit} className="relative flex items-center flex-col gap-4 max-w-[500px] w-full" >
                     <div className="flex items-center justify-center w-full gap-5 max-sm:flex-col">
-                        <Input minLength={6} name={'name'} placeholder="Enter Name" />
+                        <Input minLength={3} name={'name'} placeholder="Enter Name" />
                         <Input minLength={10} name={'mobileNo'} placeholder="Enter Mobile Number" maxLength={10} />
                     </div>
                     <div className="flex items-center gap-5 w-full flex-wrap">

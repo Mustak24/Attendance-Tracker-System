@@ -14,7 +14,7 @@ async function next(req, res){
     let {warden} = req
 
     let {username, password, name, mobileNo, roomNo} = req.body;
-    if(!(username && password && name && mobileNo && roomNo && hostelNo)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
+    if(!(username && password && name && mobileNo && roomNo)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
 
     try{
         let user = await userModel.create({

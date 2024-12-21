@@ -43,6 +43,13 @@ export default function AdminSignup(){
 
     return (
         <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden text-white">
+            <div 
+                className="absolute flex flex-col top-4 left-4 text-[2vmax] font-bold cursor-default z-[100]"
+                onClick={() => router.push('/signup')}
+            >
+                Hello,
+                <div className="text-[3em]">Warden</div>
+            </div>
             <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
                 <TypingHeading className="font-serif text-2xl my-5">- Sign Up Form -</TypingHeading>
                 <form onSubmit={handleSubmit} className="flex items-center flex-col gap-4 max-w-[500px] w-full" >
@@ -51,7 +58,7 @@ export default function AdminSignup(){
                             name="name"
                             type="text"  
                             placeholder="Enter Name"
-                            minLength={6}
+                            minLength={3}
                             required
                             className="border-2 bg-transparent rounded-full border-white placeholder:text-slate-200 placeholder:font-thin outline-none min-w-[100px] h-10 pl-4 pr-3 text-sm font-semibold focus:border-sky-500 caret-white "
                         />

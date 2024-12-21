@@ -36,8 +36,7 @@ export default function Login(){
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(formData)
         });
-        res = await res.json();
-        let {miss, alert} = res;
+        let {miss, alert} = await res.json();
 
         setLoading(false);
         setAlert((alerts) => [...alerts, alert])
@@ -47,17 +46,24 @@ export default function Login(){
         return router.push('/')
     }
 
-    useEffect(async () => {
-        let token = localStorage.getItem('user-token');
-        if(!token) return setLoad(true);
-        
+    async function verify() {
         let res = await verifyUserToken(token)
         if(res.miss) return router.push('/')
         setLoad(true);
+    }
+
+    useEffect(() => {
+        let token = localStorage.getItem('user-token');
+        if(!token){ 
+            setLoad(true);
+            return;
+        }
+        verify();
     }, [])
 
     return (
         <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden text-white">
+            <div className="absolute top-4 left-4 text-[6vmax] font-bold cursor-default z-[100]" onClick={()=>router.push('/warden/login')}>Welcome,</div>
             <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
                 <ShowIf when={isLoad} loading={true}>
                     <TypingHeading className="font-serif text-2xl my-5">- Login Form -</TypingHeading>

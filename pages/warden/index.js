@@ -1,15 +1,25 @@
+import Button from "@/Components/Button";
 import Hr from "@/Components/Hr";
+import { Popover, PopoverOnHover } from "@/Components/Popover";
 import { ShowIfElse } from "@/Components/ShowIf";
+import { _AppContext } from "@/Contexts/AppContext";
 import { isNumber } from "@/Functions/miniFuntions";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
+import { HiOutlineLogout } from "react-icons/hi";
 import { LuCalendarClock } from "react-icons/lu";
 
 export default function Index(){
+
+    const {setAlert} = useContext(_AppContext);
+
+    const router = useRouter()
 
     const [userInfo, setUserInfo] = useState({})
     const [time, setTime] = useState([])
     const [year, setYear] = useState('');
     const [mounth, setMounth] = useState('');
+
 
     useEffect(() => {
         let time = new Date()
@@ -18,18 +28,25 @@ export default function Index(){
         setMounth(String(time.getMonth()));
     }, [])
 
+    function handleLogout(){
+        localStorage.removeItem('warden-token');
+        router.push('/warden/login');
+    }
+
 
 
     return (
-        <div 
-            className="w-full h-screen overflow-x-hidden p-5 pr-2 sm:p-10 bg-sky-500 text-white" 
-            style={{
-                backgroundImage: 'linear-gradient(-90deg, royalblue, transparent)'
-            }}
-        >
+        <div className="w-full h-screen overflow-x-hidden p-5 pr-2 sm:p-10 bg-sky-500 text-white">
             <div className="text-2xl font-semibold w-full">
-                <div>Hey,</div>
-                <div className="text-5xl">Head</div>
+                <div className="flex gap-5 sm:gap-10">
+                    <div>
+                        <div>Hey,</div>
+                        <div className="text-5xl">Head</div>
+                    </div>
+                    <div className="text-xs self-end">
+                        <Button onClick={() => router.push('/signup')}>Add new Student</Button>
+                    </div>
+                </div>
                 <Hr/>
             </div>
 
@@ -78,6 +95,12 @@ export default function Index(){
                     <AttendeceRow index={2} name={'Name'} roomNo={'Room No'}></AttendeceRow>
                 </div>
             </main>
+            <button className="fixed top-2 right-2 text-4xl text-white group" onClick={handleLogout}>
+                <PopoverOnHover>
+                    <HiOutlineLogout className="group-active:scale-90" />
+                    <Popover className={'text-xs right-3 font-mono rounded-md bg-[rgb(255,255,255,.5)] py-1 px-3 max-sm:hidden'}>Logout</Popover>
+                </PopoverOnHover>
+            </button>
         </div>
     )
 }
