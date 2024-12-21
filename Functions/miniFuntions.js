@@ -22,3 +22,13 @@ export function getTime(){
     }
 
 }
+
+
+export function isNumber(num){
+    let type = typeof(num)
+    if(type == 'number') return true;
+    if(type == 'string'){
+        return num*0 == 0
+    }
+    return false
+}

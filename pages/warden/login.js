@@ -6,8 +6,8 @@ import { useContext, useEffect, useState } from "react";
 import { _AppContext } from "@/Contexts/AppContext";
 import { isObjectEmpty, isOnline } from "@/Functions/miniFuntions";
 import ShowIf from "@/Components/ShowIf";
-import verifyUserToken from "@/Functions/verifyUserToken";
 import Link from "next/link";
+import verifyWardenToken from "@/Functions/verifyWardenToken";
 
 
 export default function Login(){
@@ -36,25 +36,26 @@ export default function Login(){
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(formData)
         });
-        res = await res.json();
-        let {miss, alert} = res;
+        let {miss, alert, token} = await res.json();
+        
 
         setLoading(false);
         setAlert((alerts) => [...alerts, alert])
 
         if(!miss) return;
-        localStorage.setItem('user-token', res.token)
-        return router.push('/')
+        localStorage.setItem('warden-token', token);
+        return router.push('/warden');
     }
 
-    useEffect(async () => {
-        let token = localStorage.getItem('user-token');
+    useEffect(() => {
+        let token = localStorage.getItem('warden-token');
         if(!token) return setLoad(true);
-        
-        let res = await verifyUserToken(token)
-        if(res.miss) return router.push('/')
-        setLoad(true);
-    }, [])
+
+        verifyWardenToken(token).then(res => {
+            if(res.miss) return router.push('/warden')
+            setLoad(true);
+        });
+    })
 
     return (
         <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden text-white">
@@ -68,7 +69,7 @@ export default function Login(){
                             <LongWidthBnt isLoading={isLoading} title='Login' className='w-full max-md:hidden' />
                             <Button isLoading={isLoading} title='Login' className='md:hidden w-full border-2' />
                         </div>
-                        <div className="text-sm flex gap-2 font-mono text-black">add Member? <Link href={'/signup'} className="text-white opacity-90 active:opacity-100 sm:hover:opacity-100 font-semibold">Sign-up</Link></div>
+                        <div className="text-sm flex gap-2 font-mono text-black">add Member? <Link href={'/warden/signup'} className="text-white opacity-90 active:opacity-100 sm:hover:opacity-100 font-semibold">Sign-up</Link></div>
                     </form>
                 </ShowIf>
             </main>

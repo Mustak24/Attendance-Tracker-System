@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }) {
   return <>
     <AppContextProvider>
       <Alert/>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
       <GithubLogo className={'fixed bottom-2 right-2'}/>
     </AppContextProvider>
   </> 

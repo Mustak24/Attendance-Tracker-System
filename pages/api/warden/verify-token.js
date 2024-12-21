@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import userModel from '../Models/userModel';
+import wardenModel from '../Models/wardenModel';
 import connetToDb from '../Middlewares/connectToDb';
 import alertMsg from '@/Functions/alertMsg';
 
@@ -12,12 +12,13 @@ async function next(req, res){
     if(token.split(' ')[0] !== 'Bearer') return res.status(401).json({alert: alertMsg('invalid-token'), miss: false});
     token = token.split(' ')[1]
     try{
-        let userId = jwt.verify(token, process.env.JWT_KEY).id;
-        let user = await userModel.findById(userId);
+        let wardenId = jwt.verify(token, process.env.JWT_KEY).id;
+        console.log(wardenId)
+        let warden = await wardenModel.findById(wardenId);
+        console.log(warden)
+        if(!warden) return res.json({alert: alertMsg('invalid-token'), miss: false});
 
-        if(!user) return res.json({alert: alertMsg('invalid-token'), miss: false});
-
-        return res.json({alert: {type: 'success', msg: 'Token is valid'}, miss: true, user});
+        return res.json({alert: {type: 'success', msg: 'Token is valid'}, miss: true, warden});
     } catch(error){
         return res.status(500).json({alert: alertMsg('internal-server-error'), miss: false, error});
     }

@@ -12,6 +12,7 @@ import { useContext, useEffect, useState } from "react";
 import { TypingHeading } from "@/Components/Heading";
 import { HiOutlineLogout } from "react-icons/hi";
 import { Popover, PopoverOnHover } from "@/Components/Popover";
+import Hr from "@/Components/Hr";
 
 
 export default function Home() {
@@ -28,14 +29,14 @@ export default function Home() {
 
 
   async function handleAttendence(){
-    if(!isOnline()) return setAlert((alerts) => [...alerts, {status: 'error', msg: 'No internel connetion.'}]);
+    if(!isOnline()) return setAlert((alerts) => [...alerts, {type: 'error', msg: 'No internel connetion.'}]);
 
     setLoading(true);
     let token = localStorage.getItem('user-token');
-    let {status, msg} = await markAttendence(token);
+    let {alert, msg} = await markAttendence(token);
     setLoading(false);
 
-    setAlert((alerts) => [...alerts, {status, msg}]);
+    setAlert((alerts) => [...alerts, alert]);
 
     return getAttendenceStatus(token).then(({attendenceStatus}) => {
         setAttendenceStatus(attendenceStatus || 'error!');
@@ -49,22 +50,22 @@ export default function Home() {
 
 
 
-  useEffect(() => {
+  useEffect(async () => {
     let token = localStorage.getItem('user-token');
-    if(!token) return router.push('/login');
+    if(!token) return router.push('/signup');
 
-    verifyUserToken(token).then(res => {
-      if(!res.miss) return router.push('/login')
-      setLoad(true);
-      setUserInfo(res.user)
-      return handleAttendence()
-    })
+    let res = await verifyUserToken(token);
+    if(!res.miss) return router.push('/signup');
 
-    let interval = setInterval(() => {
+    setLoad(true);
+    setUserInfo(res.user)
+    handleAttendence()
+    
+    const interval = setInterval(() => {
       setTime(getTime())
     }, 1000);
-
-    return () => clearInterval(interval);
+    
+    return () => {clearInterval(interval)};
 
   }, []);
 
@@ -82,9 +83,7 @@ export default function Home() {
                   <TypingHeading className="capitalize" speed={120}>{userInfo.name}</TypingHeading>
                 </div>
 
-                <div className="mt-5 h-2 rounded-sm" 
-                  style={{backgroundImage: 'linear-gradient(90deg, white, transparent)'}}>
-                </div>
+                <Hr/>
 
                 <div className="max-sm:mt-2 mt-5 flex flex-col gap-1">
                   <div className="text-[3vmax] font-sans font-semibold">Your today attendence Status is,</div>
@@ -101,9 +100,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="mt-5 h-2 rounded-sm" 
-                  style={{backgroundImage: 'linear-gradient(90deg, white, transparent)'}}>
-                </div>
+                <Hr/>
 
                 <div className="mt-5 text-[3vmax] font-sans font-semibold flex items-center gap-2 flex-wrap  ">
                   <div className="text-sm">
@@ -113,10 +110,9 @@ export default function Home() {
                   <div>{time}</div>
                 </div>
 
-                <div className="mt-5 rounded-sm text-zinc-800 px-2 text-xs font-semibold font-mono"  
-                  style={{backgroundImage: 'linear-gradient(90deg, white, transparent)'}}>
-                    <TypingHeading>Attendece will be Marke Between 8:00 PM to 9:00 PM</TypingHeading>
-                </div>
+                <Hr className="h-fit px-2">
+                  <TypingHeading className="text-xs text-black font-mono">Attendece will be Marke Between 8:00 PM to 9:00 PM</TypingHeading>
+                </Hr>
 
               </div>
 

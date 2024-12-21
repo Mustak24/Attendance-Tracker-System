@@ -1,6 +1,6 @@
 import alertMsg from "@/Functions/alertMsg";
 import connetToDb from "../Middlewares/connectToDb";
-import userModel from "../Models/userModel";
+import wardenModel from "../Models/wardenModel";
 
 
 async function next(req, res) {
@@ -8,10 +8,10 @@ async function next(req, res) {
 
     if(!(username && password)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
     try{    
-        let user = await userModel.findOne({username}).select({password: true});
-        if(!(user && user.comparePassword(password))) return res.json({alert: alertMsg('invalid-info'), miss: false});
+        let warden = await wardenModel.findOne({username}).select({password: true});
+        if(!(warden && warden.comparePassword(password))) return res.json({alert: alertMsg('invalid-info'), miss: false});
 
-        let token = user.createToken();
+        let token = warden.createToken();
         return res.json({alert: {type: 'success', msg: 'login successfully'}, token, miss: true});
     } catch(error){
         return res.json({alert: alertMsg('internal-server-error'), error, miss: false})

@@ -26,14 +26,17 @@ export default function Button({children, isLoading=false, loadingInnerHTML='Wai
 }
 
 
-export function LongWidthBnt({ title = 'Click', isLoading=false, loadingInnerHTML = 'Wait ...', className = '', icon = <TbCubeSend /> }) {
+export function LongWidthBnt({ title = 'Click', isLoading=false, loadingInnerHTML = 'Wait ...', className = '', icon = <TbCubeSend />, text='white', bg='black' }) {
     return (<button className={`${className} flex items-center justify-center overflow-hidden relative group min-h-10 px-5 rounded-full font-bold font-sans border-2 border-[var(--text)] hover:bg-[var(--text)] text-[var(--text)] hover:text-[var(--bg)] transition-all duration-300 `}
         disabled={isLoading}
+        style={{ '--bg': bg, '--text': text }}
     >
         {
             isLoading ? (
                 <div className="flex items-center gap-2">
-                    <div className='min-w-5 aspect-square rounded-full border-[6px] animate-spin transition-all sm:duration-300 border-[var(--text)] max-sm:group-active:border-transparent sm:group-hover:border-transparent border-t-transparent max-sm:group-active:border-t-[var(--bg)] sm:group-hover:border-t-[var(--bg)]'></div>
+                    <div className='min-w-5 aspect-square rounded-full border-[6px] animate-spin transition-all sm:duration-300 border-[var(--text)] max-sm:group-active:border-transparent sm:group-hover:border-transparent border-t-transparent max-sm:group-active:border-t-[var(--bg)] sm:group-hover:border-t-[var(--bg)]'
+                    style={{ '--bg': bg, '--text': text }}
+                    ></div>
                     <div>{loadingInnerHTML}</div>
                 </div>
             ) : (

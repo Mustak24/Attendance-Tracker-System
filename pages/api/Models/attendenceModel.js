@@ -6,7 +6,7 @@ const attendenceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
-    dates: {
+    attendences: {
         type: Object,
         of: {
             type: Object,
@@ -16,7 +16,7 @@ const attendenceSchema = new mongoose.Schema({
             }
         }
     },
-    statuses: {
+    status: {
         type: Object,
         of: Object
     }
@@ -25,23 +25,36 @@ const attendenceSchema = new mongoose.Schema({
 attendenceSchema.methods.markAttendence = function(isPresent){
     let date = new Date().toLocaleDateString().split('/');
     
-    this.statuses[date.join('/')] = {
+    this.status[date.join('/')] = {
         status:  isPresent ? 'present' : 'absent',
         isPresent,
         time: new Date()
     };
 
-    this.dates = this.dates || {};
-    this.dates[date[2]] = this.dates[date[2]] || {};
-    this.dates[date[2]][date[1]] = this.dates[date[2]][date[1]] || {};
-    this.dates[date[2]][date[1]][date[0]] = this.statuses[date.join('/')];
+    this.attendences = this.attendences || {};
+    this.attendences[date[2]] = this.attendences[date[2]] || {};
+    this.attendences[date[2]][date[1]] = this.attendences[date[2]][date[1]] || {};
+    this.attendences[date[2]][date[1]][date[0]] = this.statuses[date.join('/')];
 }
 
 attendenceSchema.methods.getTodayStatus = function(){
-    let date = new Date().toLocaleDateString();
-    let attendenceStatus = this.statuses[date];
+    let date = new Date().toLocaleattendencestring();
+    let attendenceStatus = this.status[date];
     attendenceStatus = attendenceStatus?.status || 'not marked';
     return attendenceStatus;
+}
+
+attendenceSchema.methods.getPresentDays = function({mounth, year}){
+    year = year || new Date().getFullYear();
+    mounth = mounth || new Date().getMonth();
+    let attendence = this.attendences[year][mounth];
+    let presentDays = []
+
+    for(let key in attendence){
+        if(attendence[key].isPresent) presentDays.push(key);
+    }
+
+    return presentDays;
 }
 
 

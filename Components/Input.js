@@ -2,7 +2,7 @@ import { useState } from "react"
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 
-export function Input({id, name=null, type='text', placeholder='Enter text ...', minLength, required=false}) {
+export function Input({id, name=null, type='text', placeholder='Enter text ...', minLength, required=false, text='white', maxLength=null, className=''}) {
 
     const [_, setPasswordShow] = useState(false)
     const [inputType, setInputType] = useState(type || 'text')
@@ -11,7 +11,9 @@ export function Input({id, name=null, type='text', placeholder='Enter text ...',
 
     return (
         <>
-            <label htmlFor={id} className={`flex items-center border-2 relative rounded-full overflow-hidden min-w-[200px] w-full h-[40px] transition-all cursor-text has-[.input:invalid:not(:placeholder-shown)]:border-red-500 has-[.input:valid:not(:placeholder-shown)]:border-green-500 has-[.input:focus]:border-sky-500 border-black caret-black`}>
+            <label htmlFor={id} className={`${className} flex items-center border-2 relative rounded-full overflow-hidden min-w-[200px] w-full h-[40px] transition-all cursor-text has-[.input:invalid:not(:placeholder-shown)]:border-red-400 has-[.input:valid:not(:placeholder-shown)]:border-green-300 has-[.input:focus]:border-blue-600 border-[var(--text)] caret-[var(--text)]`}
+                style={{'--text': text}}
+            >
                 <input
                     type={inputType}
                     name={name}
@@ -19,7 +21,8 @@ export function Input({id, name=null, type='text', placeholder='Enter text ...',
                     placeholder={placeholder}
                     minLength={minLength}
                     required={required}
-                    className={`input px-[15px] bg-transparent font-[700] placeholder:font-[500] text-sm w-full h-full outline-none ${type == 'password' && 'mr-8'}`}
+                    maxLength={maxLength}
+                    className={`input px-[15px] bg-transparent font-[700] placeholder:font-[500] placeholder:text-slate-200 text-sm w-full h-full outline-none ${type == 'password' && 'mr-8'}`}
                 />
                 {
                     type == 'password' &&
@@ -29,7 +32,7 @@ export function Input({id, name=null, type='text', placeholder='Enter text ...',
                             setIconRotation(iconRotation + 180)
                             return !isPasswordShow;
                         })}
-                        style={{rotate: `${iconRotation}deg`, transformOrigin: '100%'}}
+                        style={{rotate: `${iconRotation}deg`, transformOrigin: '100%', color: text}}
                         >
                             <IoMdEye />
                             <IoMdEyeOff />

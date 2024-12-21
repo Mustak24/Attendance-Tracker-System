@@ -12,3 +12,9 @@ export default function ShowIf({when=true, children, loading=false, loadingText=
         )
     }</> 
 }
+
+export function ShowIfElse({when=true, children, Else=null}){
+    return <>
+        {when ? children : Else}
+    </>
+}

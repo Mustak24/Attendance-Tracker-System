@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        select: false,
         min: 6,
         max: 50
     },
@@ -26,6 +27,7 @@ const userSchema = new mongoose.Schema({
     mobileNo: {
         type: Number,
         required: true,
+        select: false
     },
     roomNo:{
         type: Number,
@@ -37,11 +39,16 @@ const userSchema = new mongoose.Schema({
     },
     date: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        select: false
     },
     attendenceId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'attendence'
+    },
+    wardenId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'warden'
     }
 });
 

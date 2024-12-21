@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
-import userModel from '../Models/userModel';
+import wardenModel from '../Models/wardenModel';
 import alertMsg from '@/Functions/alertMsg';
 
 
-export default async function verifyUserToken(req, res, next){
+export default async function verifyWardenToken(req, res, next){
     
     let token = req.headers['authorization'];
     if(!(token && token.split(' ')[1])) return res.status(401).json({alert: alertMsg('no-token'), miss: false});
@@ -11,12 +11,12 @@ export default async function verifyUserToken(req, res, next){
     token = token.split(' ')[1];
 
     try{
-        let userId = (jwt.verify(token, process.env.JWT_KEY)).id;
-        let user = await userModel.findById(userId);
+        let wardenId = (jwt.verify(token, process.env.JWT_KEY)).id;
+        let warden = await wardenModel.findById(wardenId);
 
-        if(!user) return res.json({alert: alertMsg('invalid-token'), miss: false});
+        if(!warden) return res.json({alert: alertMsg('invalid-token'), miss: false});
 
-        req.user = user;
+        req.warden = warden;
         return next(req, res);
     } catch(error){
         return res.status(401).json({alert: alertMsg('invalid-token'), miss: false, error});
