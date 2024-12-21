@@ -10,10 +10,10 @@ async function next(req, res) {
         let attendence = await attendenceModel.findOne({userId: user._id});
         if(!attendence) return res.status(500).json({status: 'error', msg: 'Attendence not found', miss: false});
         
-        let date = new Date().toLocaleDateString();
-        let attendenceStatus = attendence.status[date];
+        let attendenceStatus = attendence.getTodayStatus();  
         return res.status(200).json({status: 'success', msg: 'Attendence status found.', miss: true, attendenceStatus});
     } catch(error){
+        console.log(error)
         return res.status(500).json({status: 'error', msg: 'Internal server error.', miss: false, error});
     }
 }

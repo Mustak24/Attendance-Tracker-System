@@ -1,6 +1,6 @@
-export default function markAttendence(token){
+export default function getTodayAttendence(token){
     return new Promise((resolve) => {
-        fetch(`${window.location.origin}/api/users/attendence/get-attendence-status`, {
+        fetch(`${window.location.origin}/api/users/attendence/get-today-attendence-status`, {
             method: "GET",
             headers: {
                 'content-type': 'application/json',

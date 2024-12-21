@@ -1,34 +1,47 @@
 import mongoose from 'mongoose';
 
+
 const attendenceSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
-    status: {
-        type: Object,
-        default: {}
-    },
     dates: {
-       type: Object,
-       default: {},
+        type: Object,
+        of: {
+            type: Object,
+            of: {
+                type: Object,
+                of: Object
+            }
+        }
+    },
+    statuses: {
+        type: Object,
+        of: Object
     }
 });
 
-attendenceSchema.methods.markAttendence = function(ip){
+attendenceSchema.methods.markAttendence = function(isPresent){
     let date = new Date().toLocaleDateString().split('/');
-    let isPresent = Boolean(ip == process.env.HOSTEL_IP);
-
-    if(!this.status) this.status = {}
-    this.status[date.join('/')] = {
-        status:  isPresent ? 'present' : 'not set',
+    
+    this.statuses[date.join('/')] = {
+        status:  isPresent ? 'present' : 'absent',
         isPresent,
-        time: new Date().toTimeString()
+        time: new Date()
     };
 
-    if(!this.dates[date[2]]) this.dates[date[2]] = {};
-    if(!this.dates[date[2]][date[1]]) this.dates[date[2]][date[1]] = {};
-    this.dates[date[2]][date[1]][date[0]] = isPresent;
+    this.dates = this.dates || {};
+    this.dates[date[2]] = this.dates[date[2]] || {};
+    this.dates[date[2]][date[1]] = this.dates[date[2]][date[1]] || {};
+    this.dates[date[2]][date[1]][date[0]] = this.statuses[date.join('/')];
+}
+
+attendenceSchema.methods.getTodayStatus = function(){
+    let date = new Date().toLocaleDateString();
+    let attendenceStatus = this.statuses[date];
+    attendenceStatus = attendenceStatus?.status || 'not marked';
+    return attendenceStatus;
 }
 
 

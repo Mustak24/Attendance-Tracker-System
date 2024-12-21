@@ -14,7 +14,9 @@ export default function Button({children, isLoading=false, loadingInnerHTML='Wai
                 isLoading ?
                     (
                         <div className="flex items-center gap-2">
-                            <div className='min-w-5 aspect-square rounded-full border-[6px] animate-spin transition-all sm:duration-300 border-[var(--text)] max-sm:group-active:border-transparent sm:group-hover:border-transparent border-t-transparent max-sm:group-active:border-t-[var(--bg)] sm:group-hover:border-t-[var(--bg)]'></div>
+                            <div className='min-w-5 aspect-square rounded-full border-[6px] animate-spin transition-all sm:duration-300 border-[var(--text)] border-t-[var(--bg)]'
+                            style={{ '--bg': bg, '--text': text, '--scale':scale }}
+                            ></div>
                             <div>{loadingInnerHTML}</div>
                         </div>
                     ) : children || title

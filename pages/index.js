@@ -6,7 +6,7 @@ import { _AppContext } from "@/Contexts/AppContext";
 import markAttendence from "@/Functions/markAttendence";
 import { getTime, isOnline } from "@/Functions/miniFuntions";
 import verifyUserToken from "@/Functions/verifyUserToken";
-import getAttendenceStatus from '@/Functions/getAttendenceStatus'
+import getAttendenceStatus from '@/Functions/getTodayAttendenceStatus'
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { TypingHeading } from "@/Components/Heading";
@@ -20,7 +20,7 @@ export default function Home() {
   const {setAlert} = useContext(_AppContext);
 
   const [isLoad, setLoad] = useState(false);
-  const [attendence, setAttendence] = useState('not marked');
+  const [attendenceStatus, setAttendenceStatus] = useState('Wait ...');
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setLoading] = useState(false);
 
@@ -32,15 +32,13 @@ export default function Home() {
 
     setLoading(true);
     let token = localStorage.getItem('user-token');
-    let {status, msg, attendenceStatus} = await markAttendence(token);
-
-    setAttendence(attendenceStatus || 'not marked');
-
+    let {status, msg} = await markAttendence(token);
     setLoading(false);
+
     setAlert((alerts) => [...alerts, {status, msg}]);
 
-    return getAttendenceStatus(token).then(res => {
-        setAttendence(res.attendenceStatus.status || 'not marked');
+    return getAttendenceStatus(token).then(({attendenceStatus}) => {
+        setAttendenceStatus(attendenceStatus || 'error!');
     })
   }
 
@@ -55,8 +53,6 @@ export default function Home() {
     let token = localStorage.getItem('user-token');
     if(!token) return router.push('/login');
 
-    if(!isOnline()) return setAlert((alerts) => [...alerts, {status: 'error', msg: 'No internel connetion.'}]);
-
     verifyUserToken(token).then(res => {
       if(!res.miss) return router.push('/login')
       setLoad(true);
@@ -68,14 +64,14 @@ export default function Home() {
       setTime(getTime())
     }, 1000);
 
-    return ()=>clearInterval(interval);
+    return () => clearInterval(interval);
 
   }, []);
 
 
 
   return (
-    <main className="w-full h-screen flex items-center justify-center">
+    <main className="w-full h-screen flex items-center justify-center select-none">
       <ShowIf when={isLoad} loading={true}>
         <div className="relative sm:p-10 flex flex-col gap-5 w-full h-screen overflow-x-hidden bg-[rgb(65,166,255)]">
             <div className="flex max-md:items-center justify-between max-md:flex-col-reverse p-5">
@@ -93,13 +89,13 @@ export default function Home() {
                 <div className="max-sm:mt-2 mt-5 flex flex-col gap-1">
                   <div className="text-[3vmax] font-sans font-semibold">Your today attendence Status is,</div>
                   <div className="capitalize relative w-fit text-white font-semibold h-6 [&_div]:rounded-md [&_div]:px-4 [&_div]:py-1 after:content-[''] after:absolute after:z-[1] after:size-3 after:bg-slate-100 after:box-content after:border-[4px] after:border-blue-400 after:top-1 after:right-1 after:rounded-full after:translate-x-[50%] after:translate-y-[-50%] before:content-[''] before:z-[10] before:absolute before:size-4 before:bg-slate-100 before:top-1 before:right-1 before:rounded-full before:translate-x-[50%] before:translate-y-[-50%] before:animate-ping before:origin-[0%_100%]">
-                    <ShowIf when={attendence == 'not marked'}>
-                      <div className="bg-zinc-500">Not Marked</div>
+                    <ShowIf when={attendenceStatus != 'present' && attendenceStatus != 'absent'}>
+                      <div className="bg-zinc-500 capitalize">{attendenceStatus}</div>
                     </ShowIf>
-                    <ShowIf when={attendence == 'present'}>
+                    <ShowIf when={attendenceStatus == 'present'}>
                       <div className="bg-green-400">Present</div>
                     </ShowIf>
-                    <ShowIf when={attendence == 'absent'}>
+                    <ShowIf when={attendenceStatus == 'absent'}>
                       <div className="bg-red-500">Absent</div>
                     </ShowIf>
                   </div>
