@@ -13,13 +13,12 @@ export default function Login(){
     const {setAlert} = useContext(_AppContext)
 
     const [isLoading, setLoading] = useState(false)
-    const [isLoad, setLoad] = useState(false)
-
 
     const router = useRouter()
 
     async function handleSubmit(e) {
         e.preventDefault()
+        e.reset()
         if(!isOnline()) return setAlert((alerts) => [...alerts, {type: 'error', msg: 'No internet conections.'}])
         
         let formData = Object.fromEntries(new FormData(e.target));
@@ -38,11 +37,10 @@ export default function Login(){
             },
             body: JSON.stringify(formData)
         });
-        let {miss, alert} = await res.json();
+        let {alert} = await res.json();
         setLoading(false)
-        
+
         setAlert((alerts) => [...alerts, alert])
-        if(miss) return router.push('/login')
     }
 
     return (

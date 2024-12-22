@@ -13,9 +13,8 @@ async function next(req, res){
     token = token.split(' ')[1]
     try{
         let wardenId = jwt.verify(token, process.env.JWT_KEY).id;
-        console.log(wardenId)
+
         let warden = await wardenModel.findById(wardenId);
-        console.log(warden)
         if(!warden) return res.json({alert: alertMsg('invalid-token'), miss: false});
 
         return res.json({alert: {type: 'success', msg: 'Token is valid'}, miss: true, warden});

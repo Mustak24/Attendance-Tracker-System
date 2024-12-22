@@ -3,7 +3,10 @@ import Hr from "@/Components/Hr";
 import { Popover, PopoverOnHover } from "@/Components/Popover";
 import { ShowIfElse } from "@/Components/ShowIf";
 import { _AppContext } from "@/Contexts/AppContext";
+import markAllAttendence from "@/Functions/attendence/markAllAttendence";
 import { isNumber } from "@/Functions/miniFuntions";
+import getUsersInfo from "@/Functions/users/getUsersInfo";
+import verifyWardenToken from "@/Functions/verifyWardenToken";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
@@ -15,18 +18,37 @@ export default function Index(){
 
     const router = useRouter()
 
-    const [userInfo, setUserInfo] = useState({})
+    const [usersInfo, setUsersInfo] = useState([])
     const [time, setTime] = useState([])
     const [year, setYear] = useState('');
     const [mounth, setMounth] = useState('');
 
+    async function handleGetUsersInfo(){
+        let {miss, usersInfo} = await getUsersInfo(localStorage.getItem('warden-token'));
+        if(miss) return setUsersInfo(usersInfo);
+    }
+
+    async function verify() {
+        let token = localStorage.getItem('warden-token');
+        if(!token) return router.push('/warden/login');
+        
+        let {miss} = await verifyWardenToken(token);
+        if(!miss) return router.push('/warden/login');  
+
+        await markAllAttendence(token)
+        handleGetUsersInfo();
+    }
 
     useEffect(() => {
         let time = new Date()
         setTime(time.toLocaleDateString().split('/'))
         setYear(String(time.getFullYear()));
         setMounth(String(time.getMonth()));
+
+        verify();
     }, [])
+
+
 
     function handleLogout(){
         localStorage.removeItem('warden-token');
@@ -91,8 +113,17 @@ export default function Index(){
                     </div>
                 </div>
                 <div className="w-full h-fil borde-2 rounded-md py-5 sm:px-1">
-                    <AttendeceRow index={1} name={'Name'} roomNo={'Room No'}></AttendeceRow>
-                    <AttendeceRow index={2} name={'Name'} roomNo={'Room No'}></AttendeceRow>
+                    {
+                        usersInfo.map((userInfo, index) => {
+                            return <AttendeceRow 
+                                        key={index} 
+                                        index={index+1} 
+                                        name={userInfo.name} 
+                                        roomNo={userInfo.roomNo} 
+                                        attendenceId={userInfo.attendenceId}
+                                    />
+                        })
+                    }
                 </div>
             </main>
             <button className="fixed top-2 right-2 text-4xl text-white group" onClick={handleLogout}>
@@ -106,9 +137,32 @@ export default function Index(){
 }
 
 
-function AttendeceRow({index, name, roomNo, attendenceInfo={}}){
+function AttendeceRow({index, name, roomNo, attendenceId}){
+
+    const [presentDays, setPresentDays] = useState([]);
+    const [attendenceStatus, setAttendenceStatus] = useState([]);
+
+    async function getAttendenceInfo() {
+        let res = await fetch(`${window.location.origin}/api/warden/attendences/get-info?id=${attendenceId}`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+                'authorization': `Bearer ${localStorage.getItem('warden-token')}`
+            }
+        })
+        let {miss, attendenceInfo} = await res.json();
+        if(!miss) return;
+
+        setPresentDays(attendenceInfo?.presentDays)
+        setAttendenceStatus(attendenceInfo?.attendenceStatus)
+    }
+
+    useEffect(() => {
+        getAttendenceInfo();
+    }, [])
+
     return <>
-        <div className="user-attendence w-full mb-3 cursor-default">
+        <div className="user-attendence w-full mb-3 cursor-default" style={{animation: 'animate-opacity-0-to-1 .5s'}}>
             <div className="w-full flex text-sm sm:gap-5 gap-0 pl-2">
                 <div className="flex gap-2 sm:gap-1 max-sm:flex-col text-xs">
                     <div>
@@ -130,19 +184,22 @@ function AttendeceRow({index, name, roomNo, attendenceInfo={}}){
                     </div>
                 </div>
                 <div className="days w-full flex items-center gap-1 flex-wrap"> 
-                    {Array.from({length: new Date(2024, 12, 0).getDate()}).map((e, i) => {
+                    <div className="relative bg-white text-black flex items-center rounded-sm overflow-hidden justify-center h-6 px-2 font-mono font-semibold animate-pulse text-xs" style={{animationDelay: `${Math.random()*1000}ms`}}>TP:{presentDays.length}</div>
+                    <div className="relative bg-white text-black rounded-sm overflow-hidden flex items-center justify-center gap-1 h-6 px-2 font-mono font-semibold animate-pulse text-xs" style={{animationDelay: `${Math.random()*1000}ms`}}>TA: {attendenceStatus.length - presentDays.length}</div>
+                    {attendenceStatus.map(status => {
                         return (
                             <div 
-                                key={i} 
-                                className="relative flex items-center justify-center size-6 after:size-full after:opacity-50 after:rounded-sm after:absolute after:border-2 font-mono font-semibold"
-                                style={{backgroundColor: ''}}
+                                key={status[0]} 
+                                className="relative flex items-center justify-center rounded-[5px] opacity-0 border-none size-6 font-mono font-semibold"
+                                style={{
+                                    backgroundColor: status[1] == 'present' ? 'rgb(90,255,90)' : status[1] == 'absent' ? 'rgb(255,90,90)' : 'rgb(255,255,255,.4)',
+                                    animation: `animate-opacity-0-to-1 1s ${Math.random()}s forwards`
+                                }}
                             >
-                                {i+1}
+                                {status[0]}
                             </div>
                         )
-                    })}
-                    <div className="relative bg-white text-black flex items-center rounded-sm overflow-hidden justify-center h-6 px-2 font-mono font-semibold animate-pulse text-xs" style={{animationDelay: `${Math.random()*1000}ms`}}>TP:{'21'}</div>
-                    <div className="relative bg-white text-black rounded-sm overflow-hidden flex items-center justify-center gap-1 h-6 px-2 font-mono font-semibold animate-pulse text-xs" style={{animationDelay: `${Math.random()*1000}ms`}}>TA: {'10'}</div>
+                    })}  
                 </div>
             </div>
             <Hr className="h-1 my-1 w-full"/>

@@ -36,28 +36,25 @@ export default function Login(){
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(formData)
         });
-        let {miss, alert} = await res.json();
+        let {miss, alert, token} = await res.json();
 
         setLoading(false);
         setAlert((alerts) => [...alerts, alert])
 
         if(!miss) return;
-        localStorage.setItem('user-token', res.token)
+        localStorage.setItem('user-token', token)
         return router.push('/')
     }
 
     async function verify() {
+        let token = localStorage.getItem('user-token');
+        if(!token) return setLoad(true);
         let res = await verifyUserToken(token)
         if(res.miss) return router.push('/')
         setLoad(true);
     }
 
     useEffect(() => {
-        let token = localStorage.getItem('user-token');
-        if(!token){ 
-            setLoad(true);
-            return;
-        }
         verify();
     }, [])
 

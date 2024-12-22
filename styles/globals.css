@@ -17,3 +17,10 @@ body, html {
   background-image: linear-gradient(to right top, #41d7ff, #00c8ff, #00b7ff, #00a4ff, #418fff);
 
 }
+
+
+
+@keyframes animate-opacity-0-to-1{
+  0%{opacity: 0;}
+  100%{opacity: 1;}
+}

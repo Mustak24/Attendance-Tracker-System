@@ -22,7 +22,7 @@ async function next(req, res) {
         attendence.status = attendence?.status || {};
         let attendenceStatus = attendence.status[date.join('/')];
 
-        if(attendenceStatus && attendenceStatus?.isPresent) return res.json({alert: {type: 'info', msg: 'Attendece is already marked.'}, miss: true, attendenceStatus: attendenceStatus.status})
+        if(attendenceStatus && attendenceStatus != 'not mark') return res.json({alert: {type: 'info', msg: 'Attendece is already marked.'}, miss: true, attendenceStatus})
 
         let ip = await fetch('https://api.ipify.org');
         ip = await ip.text();
@@ -33,6 +33,7 @@ async function next(req, res) {
 
         return res.json({alert: {type: 'success', msg: 'Attendence marked'}, miss: true, attendenceStatus: 'present'});
     } catch(error){
+        console.log(error)
         return res.status(401).json({alert: alertMsg('internal-server-error'), miss: false, error});
     }
 }

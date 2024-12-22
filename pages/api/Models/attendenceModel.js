@@ -6,6 +6,10 @@ const attendenceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
+    wardenId: {
+        type: mongoose.Schema.Types.ObjectId,
+        res: 'warden'
+    },
     attendences: {
         type: Object,
         of: {
@@ -18,38 +22,61 @@ const attendenceSchema = new mongoose.Schema({
     },
     status: {
         type: Object,
-        of: Object
+        of: {
+            type: String,
+            enum: ['present', 'absent', 'not mark'],
+            default: 'not mark'
+        }
     }
 });
 
 attendenceSchema.methods.markAttendence = function(isPresent){
     let date = new Date().toLocaleDateString().split('/');
     
-    this.status[date.join('/')] = {
-        status:  isPresent ? 'present' : 'absent',
-        isPresent,
-        time: new Date()
-    };
+    this.status = this.status || {}
+    this.status[date.join('/')] = isPresent ? 'present' : 'absent'
 
     this.attendences = this.attendences || {};
     this.attendences[date[2]] = this.attendences[date[2]] || {};
     this.attendences[date[2]][date[1]] = this.attendences[date[2]][date[1]] || {};
-    this.attendences[date[2]][date[1]][date[0]] = this.statuses[date.join('/')];
+    this.attendences[date[2]][date[1]][date[0]] = {
+        status: isPresent ? 'present' : 'absent',
+        isPresent,
+        time: new Date()
+    };
 }
 
 attendenceSchema.methods.getTodayStatus = function(){
-    let date = new Date().toLocaleattendencestring();
-    let attendenceStatus = this.status[date];
-    attendenceStatus = attendenceStatus?.status || 'not marked';
-    return attendenceStatus;
+    let date = new Date().toLocaleDateString();
+    this.status = this.status || {};
+    return this.status[date] || 'not mark';
 }
 
-attendenceSchema.methods.getPresentDays = function({mounth, year}){
-    year = year || new Date().getFullYear();
-    mounth = mounth || new Date().getMonth();
-    let attendence = this.attendences[year][mounth];
-    let presentDays = []
+attendenceSchema.methods.addProperty = function(key, value){
+    this[key] = value;
+}
 
+attendenceSchema.methods.getAttendenceStatus = function({mounth, year}){
+    year = year || new Date().getFullYear();
+    mounth = mounth || new Date().getMonth() + 1;
+
+    let status = this.status || {};
+
+    return Array.from({
+        length: new Date(year, mounth, 0).getDate()
+    }).map((_, index) => [index+1, status[`${index+1}/${mounth}/${year}`] || 'not mark'])
+}
+
+
+attendenceSchema.methods.getPresentDays = function({mounth=null, year=null}){
+    year = year || new Date().getFullYear();
+    mounth = mounth || new Date().getMonth() + 1;
+
+    let attendence = this.attendences || {};
+    attendence = attendence[year] || {};
+    attendence = attendence[mounth] || {};
+
+    let presentDays = []
     for(let key in attendence){
         if(attendence[key].isPresent) presentDays.push(key);
     }

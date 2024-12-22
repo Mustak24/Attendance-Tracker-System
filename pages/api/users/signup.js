@@ -26,7 +26,7 @@ async function next(req, res){
             hostelNo: warden.hostelNo,
             wardenId: warden._id
         });
-        let attendence = await attendenceModel.create({userId: user._id});
+        let attendence = await attendenceModel.create({userId: user._id, wardenId: warden._id});
         user.attendenceId = attendence._id;
         await user.save();
 

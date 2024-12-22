@@ -33,7 +33,7 @@ export default function Home() {
 
     setLoading(true);
     let token = localStorage.getItem('user-token');
-    let {alert, msg} = await markAttendence(token);
+    let {alert} = await markAttendence(token);
     setLoading(false);
 
     setAlert((alerts) => [...alerts, alert]);

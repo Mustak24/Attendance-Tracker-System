@@ -15,7 +15,6 @@ export default async function verifyWardenToken(req, res, next){
         let warden = await wardenModel.findById(wardenId);
 
         if(!warden) return res.json({alert: alertMsg('invalid-token'), miss: false});
-
         req.warden = warden;
         return next(req, res);
     } catch(error){

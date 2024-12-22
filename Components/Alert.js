@@ -21,14 +21,18 @@ export function AlertCard({info}) {
     useEffect(() => {
         if(!alertBox.current) return;
         setTimeout(() => {
+            if(!alertBox.current) return;
             alertBox.current.classList.replace('opacity-0', 'opacity-1')
             alertBox.current.classList.replace('scale-[.8]', 'scale-1')
             alertBox.current.classList.replace('after:h-0', 'after:h-full')
             setTimeout(() => {
+                if(!alertBox.current) return;
                 alertBox.current.classList.replace('opacity-1', 'opacity-[.8]')
                 alertBox.current.classList.replace('scale-1', 'scale-0')
                 alertBox.current.classList.add('invisible')
-                setTimeout(() => { alertBox.current.remove() }, 500)
+                setTimeout(() => { 
+                    alertBox.current.remove() 
+                }, 500)
             }, 4000)
         }, 100)
     }, [])
