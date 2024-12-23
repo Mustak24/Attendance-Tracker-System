@@ -14,7 +14,8 @@ body, html {
   margin: 0%;
   padding: 0%;
   overflow-x: hidden;
-  background-image: linear-gradient(to right top, #41d7ff, #00c8ff, #00b7ff, #00a4ff, #418fff);
+  background-image: white;
+  color: black;
 }
 
 

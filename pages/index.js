@@ -36,18 +36,19 @@ export default function Home() {
         <div className="self-end flex relative top-0 right-0 size-[470px]">
           <Image height={400} width={400} src={'/index-main.svg'} alt="404" className="absolute top-0 right-0"   />
           <div className="absolute right-4 top-4 text-sm">
-            <Button onClick={() => router.push('/login')}>Login</Button>
+            <Button onClick={() => router.push('/login')}>User Login</Button>
           </div>
         </div>
 
-        <TypingHeading className="absolute top-4 sm:left-10 left-5 font-serif font-semibold">Build with ❤️ by @Mustak24</TypingHeading>
+        <TypingHeading className="absolute top-4 sm:left-10 left-5 font-serif font-semibold max-w-[60vw]">Build with ❤️ by @Mustak24</TypingHeading>
 
         <div className="sm:p-10 sm:pb-0 p-5 flex flex-col flex-1 gap-7 sm:self-center">
           <div className="max-w-[500px] h-fit">
             <TypingHeading  className="text-3xl font-sans my-2">Make Esay Attendance Management</TypingHeading>
             <TypingHeading speed={20} className="text-zinc-700 text-xs font-sans">Effortlessly track and manage attendance for your organization with our user-friendly attendance management system.</TypingHeading>
-            <div className="mt-5">
-              <Button text="crimson" onClick={() => router.push('/warden/signup')}>Get Free Account</Button>
+            <div className="mt-5 flex items-center flex-wrap gap-5">
+              <Button text="black" onClick={() => router.push('/organization/login')}>Have a Account</Button>
+              <Button text="crimson" onClick={() => router.push('/organization/signup')}>Get Free Account</Button>
             </div>
           </div>
         
@@ -125,7 +126,7 @@ export default function Home() {
             <div className="flex flex-col items-center gap-3 p-5 text-sm w-[300px] flex-1">
               <Button className="w-24 left-[-50px]" onClick={() => router.push('/login')}>Login</Button>
               <Button className="w-24 left-[0px]">FAQs</Button>
-              <Button className="w-24 left-[50px]" onClick={() => router.push('/warden/signup')}>Signup</Button>
+              <Button className="w-24 left-[50px]" onClick={() => router.push('/organization/signup')}>Signup</Button>
             </div>  
       </footer>
     </main>

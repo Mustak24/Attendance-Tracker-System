@@ -2,7 +2,7 @@ import { useState } from "react"
 import { IoMdEye } from "react-icons/io";
 import { IoMdEyeOff } from "react-icons/io";
 
-export function Input({id, name=null, type='text', placeholder='Enter text ...', minLength, required=false, text='white', maxLength=null, className=''}) {
+export function Input({id, name=null, type='text', placeholder='Enter text ...', minLength, required=false, text='black', maxLength=null, className=''}) {
 
     const [_, setPasswordShow] = useState(false)
     const [inputType, setInputType] = useState(type || 'text')
@@ -22,7 +22,7 @@ export function Input({id, name=null, type='text', placeholder='Enter text ...',
                     minLength={minLength}
                     required={required}
                     maxLength={maxLength}
-                    className={`input px-[15px] bg-transparent font-[700] placeholder:font-[500] placeholder:text-slate-200 text-sm w-full h-full outline-none ${type == 'password' && 'mr-8'}`}
+                    className={`input px-[15px] bg-transparent font-[700] placeholder:font-[500] placeholder:text-[var(--text)] placeholder:opacity-70 text-sm w-full h-full outline-none ${type == 'password' && 'mr-8'}`}
                 />
                 {
                     type == 'password' &&

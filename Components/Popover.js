@@ -20,6 +20,7 @@ export function Popover({ children, className='', position='absolute'}) {
         opacity: isOpen ? "1" : "0",
         visibility: isOpen ? "visible" : "hidden",
         position,
+        boxShadow: '0 0 5px rgb(0,0,0,.2)'
       }}
     >
       {children}

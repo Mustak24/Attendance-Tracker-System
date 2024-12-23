@@ -36,14 +36,14 @@ export default function Login(){
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(formData)
         });
-        let {miss, alert, token} = await res.json();
+        let {miss, alert, token, userName} = await res.json();
 
         setLoading(false);
         setAlert((alerts) => [...alerts, alert])
 
         if(!miss) return;
         localStorage.setItem('user-token', token)
-        return router.push('/')
+        return router.push(`/${userName}`)
     }
 
     async function verify() {
@@ -59,11 +59,11 @@ export default function Login(){
     }, [])
 
     return (
-        <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden text-white">
-            <div className="absolute top-4 left-4 text-[6vmax] font-bold cursor-default z-[100]" onClick={()=>router.push('/warden/login')}>Welcome,</div>
+        <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden">
+            <div className="absolute top-4 left-4 text-[6vmax] font-bold cursor-default z-[100]" onClick={()=>router.push('/organization/login')}>Hello,</div>
             <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
                 <ShowIf when={isLoad} loading={true}>
-                    <TypingHeading className="font-serif text-2xl my-5">- Login Form -</TypingHeading>
+                    <TypingHeading className="font-serif text-2xl my-5">- User Login Form -</TypingHeading>
                     <form onSubmit={handleSubmit} className="flex items-center flex-col gap-4 max-w-[500px] w-full" >
                         <Input minLength={6} name={'username'} placeholder="Enter Username" />
                         <Input minLength={6} name={'password'} placeholder="Enter Password" type='password' />
@@ -71,7 +71,7 @@ export default function Login(){
                             <LongWidthBnt isLoading={isLoading} title='Login' className='w-full max-md:hidden' />
                             <Button isLoading={isLoading} title='Login' className='md:hidden w-full border-2' />
                         </div>
-                        <div className="text-sm hidden gap-2 font-mono text-black">add Member? <Link href={'/signup'} className="text-white opacity-90 active:opacity-100 sm:hover:opacity-100 font-semibold">Sign-up</Link></div>
+                        <div className="text-sm flex gap-2 font-mono text-black">create new organization? <Link href={'/organization/signup'} className="opacity-90 active:opacity-100 sm:hover:opacity-100 font-semibold">Sign-up</Link></div>
                     </form>
                 </ShowIf>
             </main>

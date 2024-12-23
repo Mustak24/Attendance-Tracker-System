@@ -43,28 +43,28 @@ export default function Login(){
         setAlert((alerts) => [...alerts, alert])
 
         if(!miss) return;
-        localStorage.setItem('warden-token', token);
-        return router.push('/warden');
+        localStorage.setItem('organization-token', token);
+        return router.push('/organization');
     }
 
     useEffect(() => {
-        let token = localStorage.getItem('warden-token');
+        let token = localStorage.getItem('organization-token');
         if(!token) return setLoad(true);
 
         verifyWardenToken(token).then(res => {
-            if(res.miss) return router.push('/warden')
+            if(res.miss) return router.push('/organization')
             setLoad(true);
         });
     })
 
     return (
-        <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden text-white">
+        <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden ">
             <div 
                 className="absolute flex flex-col top-4 left-4 text-[2vmax] font-bold cursor-default z-[100]"
                 onClick={() => router.push('/login')}
             >
-                Welcome,
-                <div className="text-[3em]">Warden</div>
+                Hello,
+                <div className="text-[3em]">Organization</div>
             </div>
             <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
                 <ShowIf when={isLoad} loading={true}>
@@ -76,7 +76,7 @@ export default function Login(){
                             <LongWidthBnt isLoading={isLoading} title='Login' className='w-full max-md:hidden' />
                             <Button isLoading={isLoading} title='Login' className='md:hidden w-full border-2' />
                         </div>
-                        <div className="text-sm flex gap-2 font-mono text-black">add Member? <Link href={'/warden/signup'} className="text-white opacity-90 active:opacity-100 sm:hover:opacity-100 font-semibold">Sign-up</Link></div>
+                        <div className="text-sm flex gap-2 font-mono text-black">add Member? <Link href={'/organization/signup'} className="opacity-70 active:opacity-100 sm:hover:opacity-100 font-semibold">Sign-up</Link></div>
                     </form>
                 </ShowIf>
             </main>

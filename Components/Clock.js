@@ -2,7 +2,7 @@ import { set } from "mongoose";
 import { useState, useEffect } from "react";
 import { TypingHeading } from "./Heading";
 
-export default function Clock(){
+export default function Clock({bg='rgb(0,0,0,.5)', text='white'}){
     
     const [clockSecPin, setClockSecPin] = useState(0);
     const [clockMinPin, setClockMinPin] = useState(0);
@@ -24,21 +24,24 @@ export default function Clock(){
     }, [])
 
     return (
-        <div className="aspect-square w-[80vmin] max-w-[400px] flex items-center justify-center">
+        <div className="aspect-square w-[80vmin] max-w-[400px] flex items-center justify-center" style={{color: text}}>
             <div className="clock relative aspect-square w-[50vmin] max-w-[250px] flex items-center justify-center">
             
             {
                 ['4s', '6s'].map(dur => 
                     <div 
                         key={dur} 
-                        className="clock-body absolute aspect-[0.95] w-[80vmin] max-w-[400px] rounded-[50%] bg-[rgba(0,217,255,0.5)] animate-spin" 
-                        style={{animationDuration: dur}}>
+                        className="clock-body absolute aspect-[0.95] w-[80vmin] max-w-[400px] rounded-[50%] animate-spin" 
+                        style={{
+                            animationDuration: dur,
+                            backgroundColor: bg,    
+                        }}>
     
                         </div>
                 )
             }
 
-            <div className="clock-numbers absolute flex text-white items-center justify-center w-full h-full">
+            <div className="clock-numbers absolute flex items-center justify-center w-full h-full">
                 {
                     [1,2,3,4,5,6,7,8,9,10,11,12].map(num => {
                         return (
@@ -50,31 +53,29 @@ export default function Clock(){
                 }
             </div>
 
-            <div className="clock-day-display absolute border-2 text-white text-md font-mono font-semibold px-2 h-6 flex items-center justify-center -translate-y-[200%] rounded-md text-sm animate-pe">
+            <div className="clock-day-display absolute border-2 text-md font-mono font-semibold px-2 h-6 flex items-center justify-center -translate-y-[200%] rounded-md text-sm animate-pe">
                 <TypingHeading speed={200}>
                     {clockDay.split('/').join(' / ')}
                 </TypingHeading>
             </div>  
 
-            <div className="absolute clock-center-bot aspect-square w-[9px] rounded-full bg-white after:content-[''] after:absolute after:size-full after:bg-white after:animate-ping after:rounded-full"></div>
+            <div className="absolute clock-center-bot aspect-square w-[9px] rounded-full bg-[var(--bg)] after:content-[''] after:absolute after:size-full after:bg-[var(--bg)] after:animate-ping after:rounded-full" style={{'--bg': text}}></div>
 
             <div 
                 style={{rotate: `${clockSecPin}deg`}} 
-                className="absolute w-[50%] border-[3px] border-slate-50 opacity-90 rounded-[0%_50%_50%_0%] translate-x-[50%]">
+                className="absolute w-[50%] border-[3px] opacity-90 rounded-[0%_50%_50%_0%] translate-x-[50%]">
             </div>
 
             <div 
                 style={{rotate: `${clockMinPin}deg`}} 
-                className="absolute w-[40%] border-[3px] border-slate-50 opacity-90 rounded-[0%_50%_50%_0%] translate-x-[50%]">
+                className="absolute w-[40%] border-[3px] opacity-90 rounded-[0%_50%_50%_0%] translate-x-[50%]">
             </div>
             
             <div 
                 style={{rotate: `${clockHrPin}deg`}} 
-                className="absolute w-[30%] border-[3px] border-slate-50 opacity-90 rounded-[0%_50%_50%_0%] translate-x-[50%]">
+                className="absolute w-[30%] border-[3px] opacity-90 rounded-[0%_50%_50%_0%] translate-x-[50%]">
             </div>
         
-      
-
         </div>
     </div>
     )

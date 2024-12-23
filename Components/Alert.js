@@ -14,9 +14,9 @@ export default function Alert() {
 export function AlertCard({info}) {
     const alertBox = useRef(null);
     const cardTypes = {
-        success: { afterBorder: 'after:border-white', text: 'text-white', bg: 'bg-[rgb(255,255,255,.1)]' },
+        success: { afterBorder: 'after:border-green-500', text: 'text-green-500', bg: 'bg-[rgb(255,255,255,.1)]' },
         info: { afterBorder: 'after:border-black', text: 'text-black', bg: 'bg-[rgb(0,0,0,.1)]' },
-        error: { afterBorder: 'after:border-red-400', text: 'text-red-400', bg: 'bg-[rgb(239,68,68,.1)]' },
+        error: { afterBorder: 'after:border-red-500', text: 'text-red-500', bg: 'bg-[rgb(239,68,68,.1)]' },
     }
     useEffect(() => {
         if(!alertBox.current) return;

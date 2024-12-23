@@ -26,7 +26,7 @@ export default function Button({children, isLoading=false, loadingInnerHTML='Wai
 }
 
 
-export function LongWidthBnt({ title = 'Click', isLoading=false, loadingInnerHTML = 'Wait ...', className = '', icon = <TbCubeSend />, text='white', bg='black' }) {
+export function LongWidthBnt({ title = 'Click', isLoading=false, loadingInnerHTML = 'Wait ...', className = '', icon = <TbCubeSend />, text='black', bg='white' }) {
     return (<button className={`${className} flex items-center justify-center overflow-hidden relative group min-h-10 px-5 rounded-full font-bold font-sans border-2 border-[var(--text)] hover:bg-[var(--text)] text-[var(--text)] hover:text-[var(--bg)] transition-all duration-300 `}
         disabled={isLoading}
         style={{ '--bg': bg, '--text': text }}

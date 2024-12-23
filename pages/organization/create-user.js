@@ -2,10 +2,11 @@ import { Input } from "@/Components/Input";
 import { TypingHeading } from "@/Components/Heading";
 import Button, { LongWidthBnt } from "@/Components/Button";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { _AppContext } from "@/Contexts/AppContext";
 import { isNumber, isObjectEmpty, isOnline } from "@/Functions/miniFuntions";
-import Link from "next/link";
+import { FaRegUser } from "react-icons/fa";
+
 
 
 export default function Login(){
@@ -19,13 +20,11 @@ export default function Login(){
     async function handleSubmit(e) {
         e.preventDefault()
         e.reset()
-        if(!isOnline()) return setAlert((alerts) => [...alerts, {type: 'error', msg: 'No internet conections.'}])
+        
+        if(!isOnline()) return setAlert((alerts) => [...alerts, {type: 'error', msg: 'No internet conections.'}]);
         
         let formData = Object.fromEntries(new FormData(e.target));
-        if(isObjectEmpty(formData)) return setAlert((alerts) => [...alerts, {type: 'warning', msg: 'Please fill all form fields.'}])
-        
-        let token = localStorage.getItem('warden-token');
-        if(!token) return setAlert((alerts) => [...alerts, {type: 'error', msg: 'You don\'t have pormistion to create new account !!!.'}])
+        if(isObjectEmpty(formData)) return setAlert((alerts) => [...alerts, {type: 'warning', msg: 'Please fill all form fields.'}]);
 
         setLoading(true);
 
@@ -33,7 +32,7 @@ export default function Login(){
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
-                'authorization': `Bearer ${token}`
+                'authorization': `Bearer ${localStorage.getItem('organization-token')}`
             },
             body: JSON.stringify(formData)
         });
@@ -43,9 +42,22 @@ export default function Login(){
         setAlert((alerts) => [...alerts, alert])
     }
 
+    async function verify(){
+        let token = localStorage.getItem('organization-token');
+        if(!token) return router.push('/');
+    }
+
+    useEffect(() => {
+        verify()
+    }, [])
+
     return (
-        <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden text-white">
-            <div className="absolute top-4 left-4 text-[6vmax] font-bold cursor-default z-[100]" onClick={()=>router.push('/warden/signup')}>Hello,</div>
+        <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden ">
+            <div className="absolute top-4 left-4 text-[5vmax] font-bold cursor-default z-[100] flex items-center">
+                Add New 
+                <FaRegUser className="ml-2 bottom-1 relative" />
+                ,
+            </div>
             <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
                 <TypingHeading className="font-serif text-2xl my-5">- SignUp Form -</TypingHeading>
                 <form onSubmit={handleSubmit} className="relative flex items-center flex-col gap-4 max-w-[500px] w-full" >
@@ -61,7 +73,7 @@ export default function Login(){
                             name="roomNo"
                             placeholder="Room No"
                             maxLength={3}
-                            className="input border-2 bg-transparent rounded-full outline-none border-white placeholder:font-thin placeholder:text-slate-200 w-24 h-10 pl-4 pr-3 text-sm font-semibold"
+                            className="input border-2 bg-transparent rounded-full outline-none border-black placeholder:font-thin placeholder:text-black placeholder:opacity-70 w-24 h-10 pl-4 pr-3 text-sm font-semibold"
                             onChange={(e)=>{
                                 let value = e.target.value;
                                 if(isNumber(value)) return;
@@ -74,7 +86,7 @@ export default function Login(){
                         <LongWidthBnt isLoading={isLoading} title='SignUp' className='w-full max-md:hidden' />
                         <Button isLoading={isLoading} title='SignUp' className='md:hidden w-full border-2' />
                     </div>
-                    <div className="text-sm flex gap-2 font-mono text-black">Already have account? <Link href={'/login'} className="text-white opacity-90 active:opacity-100 sm:hover:opacity-100 font-semibold">log-in</Link></div>
+                    <div className="text-sm flex gap-2 font-mono text-black">This Form will add new user in you organization.</div>
                 </form>
             </main>
         </div>

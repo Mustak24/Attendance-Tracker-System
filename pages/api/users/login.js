@@ -12,7 +12,7 @@ async function next(req, res) {
         if(!(user && user.comparePassword(password))) return res.json({alert: alertMsg('invalid-info'), miss: false});
 
         let token = user.createToken();
-        return res.json({alert: {type: 'success', msg: 'login successfully'}, token, miss: true});
+        return res.json({alert: {type: 'success', msg: 'login successfully'}, token, miss: true, userName: user.name});
     } catch(error){
         return res.json({alert: alertMsg('internal-server-error'), error, miss: false})
     }

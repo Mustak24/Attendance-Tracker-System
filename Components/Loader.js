@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react"
 import { useRouter } from "next/router"
 
 
-export function PageLoader(){
+export function PageLoader({color='black'}){
 
     const router = useRouter()
     const Loader = useRef()
@@ -29,5 +29,5 @@ export function PageLoader(){
         })
       },[])
 
-    return <div ref={Loader} className="w-0 h-1 bg-white opacity-50 fixed top-0 left-0 rounded-full z-[1500]"></div>
+    return <div ref={Loader} className="w-0 h-1 opacity-70 fixed top-0 left-0 rounded-full z-[1500]" style={{backgroundColor: color}}></div>
 }
