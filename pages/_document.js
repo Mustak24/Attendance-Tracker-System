@@ -6,7 +6,7 @@ export default function Document() {
       <Head/>
       <meta name="viewport" content="width=device-width, user-scalable=false;" />
       <body className="antialiased">
-        <Main className="w-screen h-screen overflow-hidden" />
+        <Main />
         <NextScript />
       </body>
     </Html>

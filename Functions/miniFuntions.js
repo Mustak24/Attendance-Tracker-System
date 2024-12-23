@@ -32,3 +32,9 @@ export function isNumber(num){
     }
     return false
 }
+
+export function delay(time){
+    return new Promise(res => {
+        setTimeout(() => res(true), time);
+    });
+}

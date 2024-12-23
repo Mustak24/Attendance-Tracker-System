@@ -1,139 +1,146 @@
 
 import Button from "@/Components/Button";
-import Clock from "@/Components/Clock";
-import ShowIf from "@/Components/ShowIf";
-import { _AppContext } from "@/Contexts/AppContext";
-import markAttendence from "@/Functions/markAttendence";
-import { getTime, isOnline } from "@/Functions/miniFuntions";
-import verifyUserToken from "@/Functions/verifyUserToken";
-import getAttendenceStatus from '@/Functions/getTodayAttendenceStatus'
-import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
 import { TypingHeading } from "@/Components/Heading";
-import { HiOutlineLogout } from "react-icons/hi";
-import { Popover, PopoverOnHover } from "@/Components/Popover";
-import Hr from "@/Components/Hr";
+import AutoSlider, { Card } from "@/Components/AutoSlider";
+import { _AppContext } from "@/Contexts/AppContext";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { TbCalendarTime } from "react-icons/tb";
+import { AiOutlineSafety } from "react-icons/ai";
+import { CiExport } from "react-icons/ci";
+import Link from "next/link";
+import verifyUserToken from "@/Functions/verifyUserToken";
 
 
 export default function Home() {
 
-  const router = useRouter();
-  const {setAlert} = useContext(_AppContext);
+  const router = useRouter()
 
-  const [isLoad, setLoad] = useState(false);
-  const [attendenceStatus, setAttendenceStatus] = useState('Wait ...');
-  const [userInfo, setUserInfo] = useState({});
-  const [isLoading, setLoading] = useState(false);
-
-  const [time, setTime] = useState('05:30:00 AM');
-
-
-  async function handleAttendence(){
-    if(!isOnline()) return setAlert((alerts) => [...alerts, {type: 'error', msg: 'No internel connetion.'}]);
-
-    setLoading(true);
-    let token = localStorage.getItem('user-token');
-    let {alert} = await markAttendence(token);
-    setLoading(false);
-
-    setAlert((alerts) => [...alerts, alert]);
-
-    return getAttendenceStatus(token).then(({attendenceStatus}) => {
-        setAttendenceStatus(attendenceStatus || 'Not Set');
-    })
+  async function verify(){
+    let token = localStorage.getItem('user-token')
+    if(!token) return;
+    let {miss, user} = await verifyUserToken(token)
+    if(miss) return router.push(`/${user.name}`);
   }
-
-  function handleLogout(){
-    localStorage.removeItem('user-token')
-    return router.push('/login');
-  }
-
-  async function verifyUser(){
-    let token = localStorage.getItem('user-token');
-    if(!token) return router.push('/login')
-
-    let res = await verifyUserToken(token);
-    if(!res.miss) return router.push('/login');
-
-    setLoad(true);
-    setUserInfo(res.user)
-    handleAttendence()
-  }
-
-
 
   useEffect(() => {
-
-    verifyUser();
-    
-    const interval = setInterval(() => {
-      setTime(getTime())
-    }, 1000);
-    
-    return () => clearInterval(interval);
-
-  }, []);
+    verify()
+  }, [])
 
 
 
   return (
-    <main className="w-full h-screen flex items-center justify-center select-none">
-      <ShowIf when={isLoad} loading={true}>
-        <div className="relative sm:p-10 flex flex-col gap-5 w-full h-screen overflow-x-hidden bg-[rgb(65,166,255)]">
-            <div className="flex max-md:items-center justify-between max-md:flex-col-reverse p-5">
-
-              <div className="text-white self-start">
-                <div className="font-serif transition-all text-4xl md:text-7xl font-semibold">
-                  <div className="">Hello,</div>
-                  <TypingHeading className="capitalize" speed={120}>{userInfo.name}</TypingHeading>
-                </div>
-
-                <Hr/>
-
-                <div className="max-sm:mt-2 mt-5 flex flex-col gap-1">
-                  <div className="text-[3vmax] font-sans font-semibold">Your today attendence Status is,</div>
-                  <div className="capitalize relative w-fit text-white font-semibold h-6 [&_div]:rounded-md [&_div]:px-4 [&_div]:py-1 after:content-[''] after:absolute after:z-[1] after:size-3 after:bg-slate-100 after:box-content after:border-[4px] after:border-blue-400 after:top-1 after:right-1 after:rounded-full after:translate-x-[50%] after:translate-y-[-50%] before:content-[''] before:z-[10] before:absolute before:size-4 before:bg-slate-100 before:top-1 before:right-1 before:rounded-full before:translate-x-[50%] before:translate-y-[-50%] before:animate-ping before:origin-[0%_100%]">
-                    <ShowIf when={attendenceStatus != 'present' && attendenceStatus != 'absent'}>
-                      <div className="bg-zinc-500 capitalize">{attendenceStatus}</div>
-                    </ShowIf>
-                    <ShowIf when={attendenceStatus == 'present'}>
-                      <div className="bg-green-400">Present</div>
-                    </ShowIf>
-                    <ShowIf when={attendenceStatus == 'absent'}>
-                      <div className="bg-red-500">Absent</div>
-                    </ShowIf>
-                  </div>
-                </div>
-
-                <Hr/>
-
-                <div className="mt-5 text-[3vmax] font-sans font-semibold flex items-center gap-2 flex-wrap  ">
-                  <div className="text-sm">
-                    <Button className="animate-bounce top-2" isLoading={isLoading} onClick={()=>handleAttendence()}>Click For</Button>
-                  </div>
-                  <p>Mark Present,</p>
-                  <div>{time}</div>
-                </div>
-
-                <Hr className="h-fit px-2">
-                  <TypingHeading className="text-xs text-black font-mono">Attendece will be Marke Between 8:00 PM to 9:00 PM</TypingHeading>
-                </Hr>
-
-              </div>
-
-              <div className=" transition-all">
-                <Clock/>  
-              </div>
-
-            </div>
-              <button className="fixed top-2 right-2 text-4xl text-white group" onClick={handleLogout}>
-                <PopoverOnHover>
-                    <HiOutlineLogout className="group-active:scale-90" />
-                  <Popover className={'text-xs right-3 font-mono rounded-md bg-[rgb(255,255,255,.5)] py-1 px-3 max-sm:hidden'}>Logout</Popover>
-                </PopoverOnHover>
-              </button>
+    <main className="w-full min-h-screen overflow-y-scroll select-none text-black bg-white">
+      <div className="flex max-sm:flex-col flex-row-reverse justify-between min-h-[470px] relative"> 
+        <div className="self-end flex relative top-0 right-0 size-[470px]">
+          <Image height={400} width={400} src={'/index-main.svg'} alt="404" className="absolute top-0 right-0"   />
+          <div className="absolute right-4 top-4 text-sm">
+            <Button onClick={() => router.push('/login')}>Login</Button>
+          </div>
         </div>
-      </ShowIf>
+
+        <TypingHeading className="absolute top-4 sm:left-10 left-5 font-serif font-semibold">Build with ❤️ by @Mustak24</TypingHeading>
+
+        <div className="sm:p-10 sm:pb-0 p-5 flex flex-col flex-1 gap-7 sm:self-center">
+          <div className="max-w-[500px] h-fit">
+            <TypingHeading  className="text-3xl font-sans my-2">Make Esay Attendance Management</TypingHeading>
+            <TypingHeading speed={20} className="text-zinc-700 text-xs font-sans">Effortlessly track and manage attendance for your organization with our user-friendly attendance management system.</TypingHeading>
+            <div className="mt-5">
+              <Button text="crimson" onClick={() => router.push('/warden/signup')}>Get Free Account</Button>
+            </div>
+          </div>
+        
+          {/* Slider  */}
+          <div className="sm:w-[45vw] w-full rounded-lg overflow-hidden shadow-[0_0_10px_rgb(0,0,0,.2)] h-[150px] bg-orange-200 text-center text-sm max-w-[800px]">
+            <AutoSlider pixels={500}>
+              <Card>
+                <ProcessCard 
+                  index="01" 
+                  heading="Sign up for an account"
+                  content="Create your account on our platform to start managing attendance for your organization."
+                />
+              </Card>
+              <Card>
+                <ProcessCard 
+                  index="02"
+                  heading="Set up your organization"
+                  content="Enter your organization's details and customize settings according to your requirements."
+                />
+              </Card>
+              <Card>
+                <ProcessCard 
+                  index="03" 
+                  heading="Add Members"
+                  content="Invite employees to join the platform and track their attendance effortlessly."
+                />
+              </Card>
+              <Card>
+                <ProcessCard 
+                  index="03" 
+                  heading="Start tracking attendance"
+                  content="Use our intuitive tools to monitor and manage attendance records efficiently.."
+                />
+              </Card>
+            </AutoSlider>
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-blue-200 p-5 m-5 sm:m-10 rounded-lg">
+        <div className="text-center text-2xl font-serif mb-1">Attendance Tracker System</div>
+        <div className="text-xs opacity-50 text-center">Simplify the way you track and manage attendance with our user-friendly solution.</div>
+
+        <div className="flex items-center justify-center flex-wrap mt-10 gap-10 [&_.card]:shadow-lg [&_.card]:px-8 [&_.card]:w-[250px] [&_.card]:gap-3 [&_.card]:h-[280px] [&_.card]:flex [&_.card]:items-center [&_.card]:justify-center [&_.card]:flex-col ">
+          <div className="card [&_div]:text-center">
+            <TbCalendarTime className="size-20 animate-pulse" />
+            <div>MEMBERS ATTENDANCE</div>
+            <div className="text-xs opacity-50">Track your employee attendance with IP tracking from anywhere and anytime using web.</div>
+          </div>
+
+          <div className="card [&_div]:text-center">
+            <AiOutlineSafety className="size-20 animate-pulse" />
+            <div>SECURE AND ACCURATE</div>
+            <div className="text-xs opacity-50">Secure the attendance with IP address lock. Tamperproof attendance data with non editable modes for employees.</div>
+          </div>
+
+          <div className="card [&_div]:text-center">
+            <CiExport className="size-20 stroke-1 animate-pulse" />
+            <div>INTEGRATE OR EXPORT</div>
+            <div className="text-xs opacity-50">Integrate your timesheets with third party payroll, attendance and ERP software. Export to Excel, Pdf and other formats.</div>
+          </div>
+        </div>
+      </div>
+
+      <footer className="w-screen relative bg-black text-white p-10 flex flex-wrap gap-20 items-center">
+            <div className="flex-1">
+                <h1 className="font-serif text-[2em]">Get in Touch</h1>
+                <p className="text-pretty">Subscribe to our newsletter for the latest updates on new features and product releases.</p>
+                <form className="my-5 flex gap-5 flex-wrap">
+                    <input name="email" type="email" placeholder="Enter your Email" className="flex-1 h-10 rounded-full text-center px-5 text-black outline-none border-2 [&:not(:placeholder-shown)]:invalid:border-red-500 [&:not(:placeholder-shown)]:valid:border-green-500" required />
+                    <Button innerHTML='Subscribe' className='border-2 w-[150px]' scale={50} />
+                </form>
+            </div>
+
+            <div className="flex flex-col items-center gap-3 p-5 text-sm w-[300px] flex-1">
+              <Button className="w-24 left-[-50px]" onClick={() => router.push('/login')}>Login</Button>
+              <Button className="w-24 left-[0px]">FAQs</Button>
+              <Button className="w-24 left-[50px]" onClick={() => router.push('/warden/signup')}>Signup</Button>
+            </div>  
+      </footer>
     </main>
   );
+}
+
+
+function ProcessCard({heading='Heading', index='00', content='Content ...'}){
+  return(
+    <div className='bg-orange-200 flex flex-col justify-around rounded-md w-full min-h-[150px] sm:p-5 p-2'>
+      <div className="flex w-full items-center justify-between gap-10 sm:text-3xl text-2xl">
+        <div className="leading-10 font-serif text-start">{heading}</div>
+        <div className="">{index}</div>
+      </div>
+      <p className="text-start w-full font-sans">{content}</p>
+    </div>
+  )
 }

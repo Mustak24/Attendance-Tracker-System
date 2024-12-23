@@ -15,7 +15,6 @@ body, html {
   padding: 0%;
   overflow-x: hidden;
   background-image: linear-gradient(to right top, #41d7ff, #00c8ff, #00b7ff, #00a4ff, #418fff);
-
 }
 
 
@@ -23,4 +22,9 @@ body, html {
 @keyframes animate-opacity-0-to-1{
   0%{opacity: 0;}
   100%{opacity: 1;}
+}
+
+@keyframes animate-opacity-1-to-0{
+  0%{opacity: 1;}
+  100%{opacity: 0;}
 }
