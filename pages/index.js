@@ -17,9 +17,7 @@ export default function Home() {
   const router = useRouter()
 
   async function verify(){
-    let token = localStorage.getItem('user-token')
-    if(!token) return;
-    let {miss, user} = await verifyUserToken(token)
+    let {miss, user} = await verifyUserToken(localStorage.getItem('user-token'))
     if(miss) return router.push(`/user/${user.name}`);
   }
 

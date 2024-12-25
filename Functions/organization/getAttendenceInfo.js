@@ -1,5 +1,6 @@
 export default function getAttendenceInfo(token, attendenceId, mounth='', year='') {
     return new Promise(resolve => {
+        if(!token) return resolve({miss: false, alert: {type: 'error', msg: 'No token found.'}});
         fetch(`${window.location.origin}/api/organization/attendences/get-info?id=${attendenceId}&mounth=${mounth}&year=${year}`, {
             method: 'GET',
             headers: {

@@ -29,13 +29,10 @@ export default function UpdateAttendance(){
 
 
     async function verify(){
-        let token = localStorage.getItem('organization-token');
-        if(!token) return router.push('/');
-
-        let {miss} = await verifyOrganizationToken(token);
+        let {miss} = await verifyOrganizationToken(localStorage.getItem('organization-token'));
         if(!miss) return router.push('/');
+        
         setLoad(true);
-
         return handleGetUsersInfo();
     }
 
