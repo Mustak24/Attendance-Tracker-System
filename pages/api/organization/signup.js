@@ -9,7 +9,7 @@ async function next(req, res){
     if(!(name && username && password && organizationNo)) return res.status(204).json({alert: alertMsg('incomplite-info'), miss: false});
     username = username.split(' ');
 
-    if(username[1] != process.env.ORGANIZATION_USERNAME_KEY) return res.status(401).json({alert: alertMsg('invalid-info')});
+    if(!username[1] || username[1] != process.env.ORGANIZATION_USERNAME_KEY) return res.status(401).json({alert: alertMsg('invalid-info')});
     username = username[0];
 
     try{
