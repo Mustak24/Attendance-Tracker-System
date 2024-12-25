@@ -31,7 +31,8 @@ export default function Index(){
     }
 
     async function verify() {        
-        let {miss, organization} = await verifyOrganizationToken(localStorage.getItem('organization-token'));
+        let token = localStorage.getItem('organization-token');
+        let {miss, organization} = await verifyOrganizationToken(token);
         if(!miss) return router.push('/');  
 
         setOrganizationInfo(organization);
@@ -42,10 +43,10 @@ export default function Index(){
     }
 
     useEffect(() => {
-        if(router.query['organization-name'] != organizationInfo.name){
+        if(organizationInfo.name && router.query['organization-name'] != organizationInfo.name){
             router.push(`/organization/${organizationInfo.name}`)
         }
-    }, [router.query]);
+    }, [router.query, organizationInfo]);
 
     useEffect(() => {
         let time = new Date()

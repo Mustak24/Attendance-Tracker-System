@@ -50,7 +50,6 @@ export default function Home() {
   }
 
   async function verifyUser(){
-    
     let {miss, user} = await verifyUserToken(localStorage.getItem('user-token'));
     if(!miss) return router.push('/');
 
@@ -60,10 +59,10 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if(router.query['user-name'] != userInfo.name) {
+    if(userInfo.name && router.query['user-name'] != userInfo.name) {
       router.push(`/user/${userInfo.name}`)
     }
-  }, [router.query])
+  }, [router.query, userInfo])
 
 
   useEffect(() => {
