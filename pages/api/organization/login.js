@@ -8,7 +8,7 @@ async function next(req, res) {
 
     if(!(username && password)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
     try{    
-        let organization = await organizationModel.findOne({username}).select({password: true});
+        let organization = await organizationModel.findOne({username}).select('+password');
         if(!(organization && organization.comparePassword(password))) return res.json({alert: alertMsg('invalid-info'), miss: false});
 
         let token = organization.createToken();
@@ -18,7 +18,6 @@ async function next(req, res) {
 
         return res.json({alert: {type: 'success', msg: 'login successfully'}, token, miss: true, organization});
     } catch(error){
-        console.log(error);
         return res.json({alert: alertMsg('internal-server-error'), error, miss: false})
     }
 }

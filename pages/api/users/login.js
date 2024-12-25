@@ -8,7 +8,7 @@ async function next(req, res) {
 
     if(!(username && password)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
     try{    
-        let user = await userModel.findOne({username}).select({password: true});
+        let user = await userModel.findOne({username}).select('+password');
         if(!(user && user.comparePassword(password))) return res.json({alert: alertMsg('invalid-info'), miss: false});
 
         let token = user.createToken();
