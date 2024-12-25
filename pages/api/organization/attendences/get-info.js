@@ -1,6 +1,6 @@
 import alertMsg from "@/Functions/alertMsg";
 import connetToDb from "../../Middlewares/connectToDb";
-import verifyWardenToken from "../../Middlewares/verifyWardenToken";
+import verifyOrganizationToken from "../../Middlewares/verifyOrganizationToken";
 import attendenceModel from "../../Models/attendenceModel";
 
 
@@ -16,21 +16,20 @@ async function next(req, res) {
     if(!id) return res.status(201).json({alert: alertMsg('incomplite-info'), miss: false});
 
     try{
-        let attendence = await attendenceModel.findById(id);
+        var attendence = await attendenceModel.findById(id);
+        
         let attendenceInfo = {}
-
+        
         attendenceInfo['attendenceStatus'] = attendence.getAttendenceStatus({mounth, year});
         attendenceInfo['presentDays'] = attendence.getPresentDays({mounth, year});
 
         return res.status(200).json({alert: {type: 'success', msg: 'Attendence finde successfully.'}, miss: true, attendenceInfo});
     } catch(e){
-        console.log(e)
         return res.status(500).json({alert: alertMsg('internal-server-error'), miss: false})
     }
-    
 }
 
 
-const next01 = (req, res) => verifyWardenToken(req, res, next);
+const next01 = (req, res) => verifyOrganizationToken(req, res, next);
 
 export default (req, res) => connetToDb(req, res, next01);

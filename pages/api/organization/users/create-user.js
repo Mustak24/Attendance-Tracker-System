@@ -1,32 +1,34 @@
-import connetToDb from "../Middlewares/connectToDb";
-import attendenceModel from "../Models/attendenceModel";
-import userModel from "../Models/userModel";
-import jwt from 'jsonwebtoken';
-import wardenModel from "../Models/wardenModel";
+import connetToDb from "../../Middlewares/connectToDb";
+import attendenceModel from "../../Models/attendenceModel";
+import userModel from "../../Models/userModel";
 import alertMsg from "@/Functions/alertMsg";
-import verifyWardenToken from "../Middlewares/verifyWardenToken";
+import verifyOrganizationToken from "../../Middlewares/verifyOrganizationToken";
 
 
 async function next(req, res){
     
     if(req.method != 'POST') return res.json({alerrt: alertMsg('invalid-req-method'), miss: false});
 
-    let {warden} = req
+    let {organization} = req
 
     let {username, password, name, mobileNo, roomNo} = req.body;
     if(!(username && password && name && mobileNo && roomNo)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
 
     try{
+
         let user = await userModel.create({
             name, 
             username, 
             password: userModel.createHash(password), 
             mobileNo, 
             roomNo, 
-            hostelNo: warden.hostelNo,
-            wardenId: warden._id
+            organizationNo: organization.organizationNo,
+            organizationId: organization._id
         });
-        let attendence = await attendenceModel.create({userId: user._id, wardenId: warden._id});
+        let attendence = await attendenceModel.create({
+            userId: user._id, 
+            organizationId: organization._id,
+        });
         user.attendenceId = attendence._id;
         await user.save();
 
@@ -36,6 +38,6 @@ async function next(req, res){
     }
 }
 
-const next01 = (req, res) => verifyWardenToken(req, res, next);
+const next01 = (req, res) => verifyOrganizationToken(req, res, next);
 
 export default (req, res) => connetToDb(req, res, next01);

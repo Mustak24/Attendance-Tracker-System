@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
-const wardenSchema = new mongoose.Schema({
+const organizationSchema = new mongoose.Schema({
     name: {
         type: String,
         require: true
@@ -17,7 +17,7 @@ const wardenSchema = new mongoose.Schema({
         require: true,
         select: false
     },
-    hostelNo: {
+    organizationNo: {
         type: Number,
         require: true,
         unique: true
@@ -28,19 +28,19 @@ const wardenSchema = new mongoose.Schema({
     }
 });
 
-wardenSchema.methods.createToken = function(){
+organizationSchema.methods.createToken = function(){
     return jwt.sign({id: this._id}, process.env.JWT_KEY);
 }
 
-wardenSchema.methods.comparePassword = function(password){
+organizationSchema.methods.comparePassword = function(password){
     return bcrypt.compareSync(password, this.password);
 }
 
-wardenSchema.statics.createHash = function(data){
+organizationSchema.statics.createHash = function(data){
     return bcrypt.hashSync(data, 10);
 }
 
 
-const wardenModel = mongoose.models.warden || mongoose.model('warden', wardenSchema);
+const organizationModel = mongoose.models.organization || mongoose.model('organization', organizationSchema);
 
-export default wardenModel;
+export default organizationModel;

@@ -24,20 +24,19 @@ export default function AdminSignup(){
         
         setLoading(true)
         
-        let res = await fetch(`${window.location.origin}/api/warden/signup`, {
+        let res = await fetch(`${window.location.origin}/api/organization/signup`, {
             method: "POST",
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(formData)
         })
-        let {alert, miss, token} = await res.json();
+        let {alert, miss, token, organization} = await res.json();
         setLoading(false)
 
-        console.log(alert)
         setAlert((alerts) => [...alerts, alert]);
         if(!miss) return;
 
         localStorage.setItem('organization-token', token);
-        return router.push('/organization')
+        return router.push(`/organization/${organization.name}`)
     }
 
 
@@ -61,9 +60,9 @@ export default function AdminSignup(){
                             className="border-2 bg-transparent rounded-full border-black placeholder:text-black placeholder:font-normal placeholder:opacity-70 outline-none min-w-[100px] h-10 pl-4 pr-3 text-sm font-semibold focus:border-sky-500  "
                         />
                         <input 
-                            name="hostelNo"
+                            name="organizationNo"
                             type="text"  
-                            placeholder="Hostel No"
+                            placeholder="Sr. No"
                             maxLength={2}
                             required
                             className="border-2 bg-transparent rounded-full border-black placeholder:text-black placeholder:opacity-70 placeholder:font-thin outline-none max-w-24 h-10 pl-4 pr-3 text-sm font-semibold focus:border-sky-500 "

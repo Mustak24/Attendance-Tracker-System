@@ -7,7 +7,7 @@ import { _AppContext } from "@/Contexts/AppContext";
 import { isObjectEmpty, isOnline } from "@/Functions/miniFuntions";
 import ShowIf from "@/Components/ShowIf";
 import Link from "next/link";
-import verifyWardenToken from "@/Functions/verifyWardenToken";
+import verifyOrganizationToken from "@/Functions/organization/verifyOrganizationToken";
 
 
 export default function Login(){
@@ -31,12 +31,12 @@ export default function Login(){
 
         setLoading(true);
 
-        let res = await fetch(`${window.location.origin}/api/warden/login`, {
+        let res = await fetch(`${window.location.origin}/api/organization/login`, {
             method: 'POST',
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(formData)
         });
-        let {miss, alert, token} = await res.json();
+        let {miss, alert, token, organization} = await res.json();
         
 
         setLoading(false);
@@ -44,18 +44,18 @@ export default function Login(){
 
         if(!miss) return;
         localStorage.setItem('organization-token', token);
-        return router.push('/organization');
+        return router.push(`/organization/${organization.name}`);
+    }
+
+    async function verify(){
+        let {miss, organization} = await verifyOrganizationToken(localStorage.getItem('organization-token'));
+        if(!miss) return setLoad(true);
+        return router.push(`/organization/${organization.name}`);
     }
 
     useEffect(() => {
-        let token = localStorage.getItem('organization-token');
-        if(!token) return setLoad(true);
-
-        verifyWardenToken(token).then(res => {
-            if(res.miss) return router.push('/organization')
-            setLoad(true);
-        });
-    })
+        verify();
+    }, [])
 
     return (
         <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden ">

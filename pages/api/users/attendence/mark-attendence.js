@@ -19,17 +19,15 @@ async function next(req, res) {
         let attendence = await attendenceModel.findOne({userId: user._id});
         if(!attendence) return res.json({alert: {type: 'error', msg: 'Attendence not found'}, miss: false});
         
-        attendence.status = attendence?.status || {};
-        let attendenceStatus = attendence.status[date.join('/')];
+        let attendenceStatus = attendence.status.get(date.join('/'));
 
-        if(attendenceStatus && attendenceStatus != 'not mark') return res.json({alert: {type: 'info', msg: 'Attendece is already marked.'}, miss: true, attendenceStatus})
+        if(attendenceStatus == 'present') return res.json({alert: {type: 'info', msg: 'Attendece is already marked.'}, miss: true, attendenceStatus})
 
         let ip = await fetch('https://api.ipify.org');
         ip = await ip.text();
-        if(ip != process.env.HOSTEL_IP) return res.json({alert: {type: 'error', msg: 'You are not connected to hostel WiFi.'}, miss: false});
+        if(ip != process.env.ORGANIZATION_IP) return res.json({alert: {type: 'error', msg: 'You are not connected to organization WiFi.'}, miss: false});
 
-        attendence.markAttendence(true);
-        await attendence.save();
+        await attendence.markAttendence(true);
 
         return res.json({alert: {type: 'success', msg: 'Attendence marked'}, miss: true, attendenceStatus: 'present'});
     } catch(error){

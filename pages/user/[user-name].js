@@ -3,10 +3,10 @@ import Button from "@/Components/Button";
 import Clock from "@/Components/Clock";
 import ShowIf from "@/Components/ShowIf";
 import { _AppContext } from "@/Contexts/AppContext";
-import markAttendence from "@/Functions/markAttendence";
+import markAttendence from "@/Functions/users/markAttendence";
 import { getTime, isOnline } from "@/Functions/miniFuntions";
-import verifyUserToken from "@/Functions/verifyUserToken";
-import getAttendenceStatus from '@/Functions/getTodayAttendenceStatus'
+import verifyUserToken from "@/Functions/users/verifyUserToken";
+import getAttendenceStatus from '@/Functions/users/getTodayAttendenceStatus'
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { TypingHeading } from "@/Components/Heading";
@@ -18,6 +18,7 @@ import Hr from "@/Components/Hr";
 export default function Home() {
 
   const router = useRouter();
+
   const {setAlert} = useContext(_AppContext);
 
   const [isLoad, setLoad] = useState(true);
@@ -49,23 +50,26 @@ export default function Home() {
   }
 
   async function verifyUser(){
-    let token = localStorage.getItem('user-token');
-    if(!token) return router.push('/')
-
-    let res = await verifyUserToken(token);
-    if(!res.miss) return router.push('/');
+    
+    let {miss, user} = await verifyUserToken(localStorage.getItem('user-token'));
+    if(!miss) return router.push('/');
 
     setLoad(true);
-    setUserInfo(res.user)
+    setUserInfo(user)
     handleAttendence()
   }
 
+  useEffect(() => {
+    if(router.query['user-name'] != userInfo.name) {
+      router.push(`/user/${userInfo.name}`)
+    }
+  }, [router.query])
 
 
   useEffect(() => {
 
     verifyUser();
-    
+   
     const interval = setInterval(() => {
       setTime(getTime())
     }, 1000);
@@ -115,7 +119,7 @@ export default function Home() {
                   <div>{time}</div>
                 </div>
 
-                <Hr className="h-fit px-2">
+                <Hr className="h-fit px-2 pr-10">
                   <TypingHeading className="text-xs text-white font-mono">Attendece will be Marke Between 8:00 PM to 9:00 PM</TypingHeading>
                 </Hr>
 

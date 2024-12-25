@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { _AppContext } from "@/Contexts/AppContext";
 import { isObjectEmpty, isOnline } from "@/Functions/miniFuntions";
 import ShowIf from "@/Components/ShowIf";
-import verifyUserToken from "@/Functions/verifyUserToken";
+import verifyUserToken from "@/Functions/users/verifyUserToken";
 import Link from "next/link";
 
 
@@ -36,22 +36,21 @@ export default function Login(){
             headers: {'content-type': 'application/json'},
             body: JSON.stringify(formData)
         });
-        let {miss, alert, token, userName} = await res.json();
+        let {miss, alert, token, user} = await res.json();
 
         setLoading(false);
         setAlert((alerts) => [...alerts, alert])
 
         if(!miss) return;
         localStorage.setItem('user-token', token)
-        return router.push(`/${userName}`)
+        return router.push(`/user/${user.name}`)
     }
 
     async function verify() {
-        let token = localStorage.getItem('user-token');
-        if(!token) return setLoad(true);
-        let res = await verifyUserToken(token)
-        if(res.miss) return router.push('/')
-        setLoad(true);
+        let {miss, user} = await verifyUserToken(localStorage.getItem('user-token'));
+        if(!miss) return setLoad(true);
+
+        router.push(`/user/${user.name}`);
     }
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-import verifyWardenToken from "../../Middlewares/verifyWardenToken";
+import verifyorganizationToken from "../../Middlewares/verifyOrganizationToken";
 import connetToDb from "../../Middlewares/connectToDb";
 import alertMsg from "@/Functions/alertMsg";
 import attendenceModel from "../../Models/attendenceModel";
@@ -10,16 +10,15 @@ async function next(req, res) {
     let time = new Date();
     if(time.toTimeString().split(':')[0] < 21) return res.status(501).json({alert: {type: 'info', msg: 'Defaul attendence time still left.'}, miss: false});
 
-    let {warden} = req;
+    let {organization} = req;
     
     try{
-        let attendences = await attendenceModel.find({wardenId: warden._id});
-        attendences.forEach(async (attendence) => {
-            if(!(attendence.status && attendence.status[time.toLocaleDateString()] == 'present')){
-                attendence.markAttendence(false);
+        let attendences = await attendenceModel.find({organizationId: organization._id});
+        for(let attendance of attendences){
+            if(attendance.status.get(time.toLocaleDateString()) != 'present'){
+                await attendance.markAttendence(false);
             }
-            await attendence.save();
-        })
+        }
         return res.status(200).json({alert: {type: 'success', msg: 'All attendence are updated.'}, miss: true});
     } catch(error){
         return res.status(500).json({alert: alertMsg('internal-server-error'), miss: false});
@@ -27,6 +26,6 @@ async function next(req, res) {
 }
 
 
-const next01 = (req, res) => verifyWardenToken(req, res, next)
+const next01 = (req, res) => verifyorganizationToken(req, res, next)
 
 export default (req, res) => connetToDb(req, res, next01);

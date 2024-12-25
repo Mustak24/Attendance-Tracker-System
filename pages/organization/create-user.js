@@ -6,6 +6,9 @@ import { useContext, useEffect, useState } from "react";
 import { _AppContext } from "@/Contexts/AppContext";
 import { isNumber, isObjectEmpty, isOnline } from "@/Functions/miniFuntions";
 import { FaRegUser } from "react-icons/fa";
+import createUser from "@/Functions/organization/createUser";
+import ShowIf from "@/Components/ShowIf";
+import verifyOrganizationToken from "@/Functions/organization/verifyOrganizationToken";
 
 
 
@@ -14,37 +17,32 @@ export default function Login(){
     const {setAlert} = useContext(_AppContext)
 
     const [isLoading, setLoading] = useState(false)
+    const [isLoad, setLoad] = useState(false)
 
     const router = useRouter()
 
     async function handleSubmit(e) {
         e.preventDefault()
-        e.reset()
+        e.target.reset()
         
         if(!isOnline()) return setAlert((alerts) => [...alerts, {type: 'error', msg: 'No internet conections.'}]);
         
         let formData = Object.fromEntries(new FormData(e.target));
-        if(isObjectEmpty(formData)) return setAlert((alerts) => [...alerts, {type: 'warning', msg: 'Please fill all form fields.'}]);
+
+        if(isObjectEmpty(formData)) 
+            return setAlert((alerts) => [...alerts, {type: 'warning', msg: 'Please fill all form fields.'}]);
 
         setLoading(true);
+        let {alert} = await createUser(localStorage.getItem('organization-token'), formData);
+        setLoading(false);
 
-        let res = await fetch(`${window.location.origin}/api/users/signup`, {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json',
-                'authorization': `Bearer ${localStorage.getItem('organization-token')}`
-            },
-            body: JSON.stringify(formData)
-        });
-        let {alert} = await res.json();
-        setLoading(false)
-
-        setAlert((alerts) => [...alerts, alert])
+        setAlert((alerts) => [...alerts, alert]);
     }
 
     async function verify(){
-        let token = localStorage.getItem('organization-token');
-        if(!token) return router.push('/');
+        let {miss} = await verifyOrganizationToken(localStorage.getItem('organization-token'));
+        if(!miss) return router.push('/');
+        return setLoad(true);
     }
 
     useEffect(() => {
@@ -53,6 +51,7 @@ export default function Login(){
 
     return (
         <div className="flex items-center justify-center w-full h-[100svh] overflow-hidden ">
+            <ShowIf when={isLoad} isLoading={true}>
             <div className="absolute top-4 left-4 text-[5vmax] font-bold cursor-default z-[100] flex items-center">
                 Add New 
                 <FaRegUser className="ml-2 bottom-1 relative" />
@@ -73,7 +72,7 @@ export default function Login(){
                             name="roomNo"
                             placeholder="Room No"
                             maxLength={3}
-                            className="input border-2 bg-transparent rounded-full outline-none border-black placeholder:font-thin placeholder:text-black placeholder:opacity-70 w-24 h-10 pl-4 pr-3 text-sm font-semibold"
+                            className="input border-2 bg-transparent rounded-full outline-none border-black placeholder:font-normal placeholder:text-black placeholder:opacity-70 w-24 h-10 pl-4 pr-3 text-sm font-semibold focus:border-sky-500"
                             onChange={(e)=>{
                                 let value = e.target.value;
                                 if(isNumber(value)) return;
@@ -89,6 +88,7 @@ export default function Login(){
                     <div className="text-sm flex gap-2 font-mono text-black">This Form will add new user in you organization.</div>
                 </form>
             </main>
+            </ShowIf>
         </div>
     )
 }

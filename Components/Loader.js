@@ -12,16 +12,18 @@ export function PageLoader({color='black'}){
           if(!Loader?.current) return;
           Loader.current.style.display = 'block'
           setTimeout(()=>{
+            if(!Loader?.current) return;
             Loader.current.style.transition = 'all 8s'
             Loader.current.style.width = '80%';
           },1)
         })
         router.events.on('routeChangeComplete', ()=>{
-          if(!Loader?.current) return;
             setTimeout(() => {
+              if(!Loader?.current) return;
                 Loader.current.style.transition = 'all .1s'
                 Loader.current.style.width = '100%';   
                 setTimeout(()=>{
+                  if(!Loader?.current) return;
                     Loader.current.style.display = 'none'
                     Loader.current.style.width = '0%'
                 },100)

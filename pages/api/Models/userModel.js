@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    hostelNo: {
+    organizationNo: {
         type: Number,
         required: true
     },
@@ -46,9 +46,9 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'attendence'
     },
-    wardenId: {
+    organizationId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'warden'
+        ref: 'organization'
     }
 });
 

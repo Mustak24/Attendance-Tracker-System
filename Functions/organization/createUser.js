@@ -1,11 +1,12 @@
-export default function markAllAttendence(token){
+export default function createUser(token, data){
     return new Promise(resolve => {
-        fetch(`${window.location.origin}/api/warden/attendences/mark-today-all-attendence`, {
-            method: "GET",
+        fetch(`${window.location.origin}/api/organization/users/create-user`, {
+            method: "POST",
             headers: {
                 'content-type': 'application/json',
                 'authorization': `Bearer ${token}`,
-            }
+            },
+            body: JSON.stringify(data)
         }).then(res => res.json()).then(res => resolve(res));
     })
 }

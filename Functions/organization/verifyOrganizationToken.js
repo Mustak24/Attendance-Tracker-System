@@ -1,6 +1,6 @@
-export default function verifyWardenToken(token){
+export default function verifyOrganizationToken(token){
     return new Promise((resolve) => {
-        fetch(`${window.location.origin}/api/warden/verify-token`, {
+        fetch(`${window.location.origin}/api/organization/verify-token`, {
             method: "GET",
             headers: {
                 'authorization': `Bearer ${token}`,

@@ -4,13 +4,12 @@ import { TypingHeading } from "@/Components/Heading";
 import AutoSlider, { Card } from "@/Components/AutoSlider";
 import { _AppContext } from "@/Contexts/AppContext";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { TbCalendarTime } from "react-icons/tb";
 import { AiOutlineSafety } from "react-icons/ai";
 import { CiExport } from "react-icons/ci";
-import Link from "next/link";
-import verifyUserToken from "@/Functions/verifyUserToken";
+import verifyUserToken from "@/Functions/users/verifyUserToken";
 
 
 export default function Home() {
@@ -21,7 +20,7 @@ export default function Home() {
     let token = localStorage.getItem('user-token')
     if(!token) return;
     let {miss, user} = await verifyUserToken(token)
-    if(miss) return router.push(`/${user.name}`);
+    if(miss) return router.push(`/user/${user.name}`);
   }
 
   useEffect(() => {
@@ -33,14 +32,14 @@ export default function Home() {
   return (
     <main className="w-full min-h-screen overflow-y-scroll select-none text-black bg-white">
       <div className="flex max-sm:flex-col flex-row-reverse justify-between min-h-[470px] relative"> 
-        <div className="self-end flex relative top-0 right-0 size-[470px]">
+        <div className="sm:self-start self-end flex relative top-0 right-0 max-w-[470px] w-full aspect-square">
           <Image height={400} width={400} src={'/index-main.svg'} alt="404" className="absolute top-0 right-0"   />
-          <div className="absolute right-4 top-4 text-sm">
-            <Button onClick={() => router.push('/login')}>User Login</Button>
+          <div className="absolute right-4 top-4 sm:text-sm text-xs">
+            <Button onClick={() => router.push('/user/login')}>User Login</Button>
           </div>
         </div>
 
-        <TypingHeading className="absolute top-4 sm:left-10 left-5 font-serif font-semibold max-w-[60vw]">Build with ❤️ by @Mustak24</TypingHeading>
+        <TypingHeading className="absolute top-4 sm:left-10 left-5 font-serif font-semibold max-w-[40vw]">Build with ❤️ by @Mustak24</TypingHeading>
 
         <div className="sm:p-10 sm:pb-0 p-5 flex flex-col flex-1 gap-7 sm:self-center">
           <div className="max-w-[500px] h-fit">

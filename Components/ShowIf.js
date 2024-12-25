@@ -4,7 +4,7 @@ export default function ShowIf({when=true, children, loading=false, loadingText=
             children
         ) : (
             !loading ? null : (
-                <div className="flex items-center justify-center flex-col relative">
+                <div className="flex items-center justify-center flex-col relative w-full h-full">
                     <div className="aspect-square border-[6px] border-t-transparent border-black animate-spin rounded-full" style={{width: loaderSize}}></div>
                     <div className="text-xs font-sans font-bold">{loadingText}</div>
                 </div>
