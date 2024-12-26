@@ -105,15 +105,15 @@ export default function Index(){
                             <div className="text-5xl">{organizationInfo.name}</div>
                         </div>
                         <div className="text-xs self-end">
-                            <Button scale={35} onClick={() => router.push('/organization/create-user')}>Add new User</Button>
+                            <Button onClick={() => router.push('/organization/create-user')}>Add new User</Button>
                         </div>
                     </div>
                     <div className="flex gap-5 items-center">
                         <div className="text-xs">
-                            <Button scale={40} text="royalblue" onClick={() => router.push('/organization/update-attendance')}>Update Attendance</Button>
+                            <Button text="royalblue" onClick={() => router.push('/organization/update-attendance')}>Update Attendance</Button>
                         </div>
                         <div className="text-xs">
-                            <Button text="crimson" scale={20} onClick={downloadData} isLoading={isCsvDownloading}>
+                            <Button text="crimson" onClick={downloadData} isLoading={isCsvDownloading}>
                                 <div className="flex w-fit gap-2 items-center">
                                     <MdOutlineDownloadForOffline className="size-5" />
                                     CSV File
