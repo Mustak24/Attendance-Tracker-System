@@ -1,7 +1,7 @@
 import alertMsg from "@/Functions/alertMsg";
 import connetToDb from "../../Middlewares/connectToDb";
 import verifyOrganizationToken from "../../Middlewares/verifyOrganizationToken";
-import attendenceModel from "../../Models/attendenceModel";
+import attendanceModel from "../../Models/attendanceModel";
 
 
 async function next(req, res) {
@@ -16,14 +16,14 @@ async function next(req, res) {
     if(!id) return res.status(201).json({alert: alertMsg('incomplite-info'), miss: false});
 
     try{
-        var attendence = await attendenceModel.findById(id);
+        var attendance = await attendanceModel.findById(id);
         
-        let attendenceInfo = {}
+        let attendanceInfo = {}
         
-        attendenceInfo['attendenceStatus'] = attendence.getAttendenceStatus({mounth, year});
-        attendenceInfo['presentDays'] = attendence.getPresentDays({mounth, year});
+        attendanceInfo['attendanceStatus'] = attendance.getAttendanceStatus({mounth, year});
+        attendanceInfo['presentDays'] = attendance.getPresentDays({mounth, year});
 
-        return res.status(200).json({alert: {type: 'success', msg: 'Attendence finde successfully.'}, miss: true, attendenceInfo});
+        return res.status(200).json({alert: {type: 'success', msg: 'Attendance finde successfully.'}, miss: true, attendanceInfo});
     } catch(e){
         return res.status(500).json({alert: alertMsg('internal-server-error'), miss: false})
     }

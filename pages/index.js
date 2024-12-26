@@ -44,14 +44,14 @@ export default function Home() {
             <TypingHeading  className="text-3xl font-sans my-2">Make Esay Attendance Management</TypingHeading>
             <TypingHeading speed={20} className="text-zinc-700 text-xs font-sans">Effortlessly track and manage attendance for your organization with our user-friendly attendance management system.</TypingHeading>
             <div className="mt-5 flex items-center flex-wrap gap-5">
-              <Button text="black" onClick={() => router.push('/organization/login')}>Have a Account</Button>
-              <Button text="crimson" onClick={() => router.push('/organization/signup')}>Get Free Account</Button>
+              <Button scale={40} text="black" onClick={() => router.push('/organization/login')}>Have a Account</Button>
+              <Button scale={45} text="crimson" onClick={() => router.push('/organization/signup')}>Get Free Account</Button>
             </div>
           </div>
         
           {/* Slider  */}
-          <div className="sm:w-[45vw] w-full rounded-lg overflow-hidden shadow-[0_0_10px_rgb(0,0,0,.2)] h-[150px] bg-orange-200 text-center text-sm max-w-[800px]">
-            <AutoSlider pixels={500}>
+          <div className="sm:w-[45vw] w-full rounded-lg overflow-hidden shadow-[0_0_10px_rgb(0,0,0,.2)] h-[150px] bg-orange-200 text-center text-sm max-w-[600px]">
+            <AutoSlider size={20}>
               <Card>
                 <ProcessCard 
                   index="01" 
@@ -75,7 +75,7 @@ export default function Home() {
               </Card>
               <Card>
                 <ProcessCard 
-                  index="03" 
+                  index="04" 
                   heading="Start tracking attendance"
                   content="Use our intuitive tools to monitor and manage attendance records efficiently.."
                 />
@@ -116,14 +116,14 @@ export default function Home() {
                 <p className="text-pretty">Subscribe to our newsletter for the latest updates on new features and product releases.</p>
                 <form className="my-5 flex gap-5 flex-wrap">
                     <input name="email" type="email" placeholder="Enter your Email" className="flex-1 h-10 rounded-full text-center px-5 text-black outline-none border-2 [&:not(:placeholder-shown)]:invalid:border-red-500 [&:not(:placeholder-shown)]:valid:border-green-500" required />
-                    <Button innerHTML='Subscribe' className='border-2 w-[150px]' scale={50} />
+                    <Button innerHTML='Subscribe' className='border-2 w-[150px]' scale={40} />
                 </form>
             </div>
 
             <div className="flex flex-col items-center gap-3 p-5 text-sm w-[300px] flex-1">
-              <Button className="w-24 left-[-50px]" onClick={() => router.push('/login')}>Login</Button>
-              <Button className="w-24 left-[0px]">FAQs</Button>
-              <Button className="w-24 left-[50px]" onClick={() => router.push('/organization/signup')}>Signup</Button>
+              <Button scale={20} className="w-24 border-2 left-[-50px]" onClick={() => router.push('/login')}>Login</Button>
+              <Button scale={20} className="w-24 border-2 left-[0px]">FAQs</Button>
+              <Button scale={20} className="w-24 border-2 left-[50px]" onClick={() => router.push('/organization/signup')}>Signup</Button>
             </div>  
       </footer>
     </main>

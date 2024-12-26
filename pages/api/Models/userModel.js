@@ -42,9 +42,9 @@ const userSchema = new mongoose.Schema({
         default: Date.now,
         select: false
     },
-    attendenceId: {
+    attendanceId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'attendence'
+        ref: 'attendance'
     },
     organizationId: {
         type: mongoose.Schema.Types.ObjectId,

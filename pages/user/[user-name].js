@@ -3,10 +3,10 @@ import Button from "@/Components/Button";
 import Clock from "@/Components/Clock";
 import ShowIf from "@/Components/ShowIf";
 import { _AppContext } from "@/Contexts/AppContext";
-import markAttendence from "@/Functions/users/markAttendence";
+import markAttendance from "@/Functions/users/markAttendance";
 import { getTime, isOnline } from "@/Functions/miniFuntions";
 import verifyUserToken from "@/Functions/users/verifyUserToken";
-import getAttendenceStatus from '@/Functions/users/getTodayAttendenceStatus'
+import getAttendanceStatus from '@/Functions/users/getTodayAttendanceStatus'
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { TypingHeading } from "@/Components/Heading";
@@ -22,25 +22,25 @@ export default function Home() {
   const {setAlert} = useContext(_AppContext);
 
   const [isLoad, setLoad] = useState(true);
-  const [attendenceStatus, setAttendenceStatus] = useState('Wait ...');
+  const [attendanceStatus, setAttendanceStatus] = useState('Wait ...');
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setLoading] = useState(false);
 
   const [time, setTime] = useState('05:30:00 AM');
 
 
-  async function handleAttendence(){
+  async function handleAttendance(){
     if(!isOnline()) return setAlert((alerts) => [...alerts, {type: 'error', msg: 'No internel connetion.'}]);
 
     setLoading(true);
     let token = localStorage.getItem('user-token');
-    let {alert} = await markAttendence(token);
+    let {alert} = await markAttendance(token);
     setLoading(false);
 
     setAlert((alerts) => [...alerts, alert]);
 
-    return getAttendenceStatus(token).then(({attendenceStatus}) => {
-        setAttendenceStatus(attendenceStatus || 'Not Set');
+    return getAttendanceStatus(token).then(({attendanceStatus}) => {
+        setAttendanceStatus(attendanceStatus || 'Not Set');
     })
   }
 
@@ -55,7 +55,7 @@ export default function Home() {
 
     setLoad(true);
     setUserInfo(user)
-    handleAttendence()
+    handleAttendance()
   }
 
   useEffect(() => {
@@ -94,15 +94,15 @@ export default function Home() {
                 <Hr/>
 
                 <div className="max-sm:mt-2 mt-5 flex flex-col gap-1">
-                  <div className="text-[3vmax] font-sans font-semibold">Your today attendence Status is,</div>
+                  <div className="text-[3vmax] font-sans font-semibold">Your today attendance Status is,</div>
                   <div className="capitalize relative w-fit font-semibold h-6 [&_div]:rounded-md [&_div]:px-4 [&_div]:py-1 after:content-[''] after:absolute after:z-[1] after:size-3 after:bg-sky-500 after:box-content after:border-[4px] after:border-blue-200 after:top-1 after:right-1 after:rounded-full after:translate-x-[50%] after:translate-y-[-50%] before:content-[''] before:z-[10] before:absolute before:size-4 before:bg-sky-100 before:top-1 before:right-1 before:rounded-full before:translate-x-[50%] before:translate-y-[-50%] before:animate-ping before:origin-[0%_100%]">
-                    <ShowIf when={attendenceStatus != 'present' && attendenceStatus != 'absent'}>
-                      <div className="bg-zinc-500 capitalize">{attendenceStatus}</div>
+                    <ShowIf when={attendanceStatus != 'present' && attendanceStatus != 'absent'}>
+                      <div className="bg-zinc-500 capitalize">{attendanceStatus}</div>
                     </ShowIf>
-                    <ShowIf when={attendenceStatus == 'present'}>
+                    <ShowIf when={attendanceStatus == 'present'}>
                       <div className="bg-green-400">Present</div>
                     </ShowIf>
-                    <ShowIf when={attendenceStatus == 'absent'}>
+                    <ShowIf when={attendanceStatus == 'absent'}>
                       <div className="bg-red-500">Absent</div>
                     </ShowIf>
                   </div>
@@ -112,14 +112,14 @@ export default function Home() {
 
                 <div className="mt-5 text-[3vmax] font-sans font-semibold flex items-center gap-2 flex-wrap  ">
                   <div className="text-sm">
-                    <Button className="animate-bounce top-2" isLoading={isLoading} onClick={()=>handleAttendence()}>Click For</Button>
+                    <Button className="animate-bounce top-2" isLoading={isLoading} onClick={()=>handleAttendance()}>Click For</Button>
                   </div>
                   <p>Mark Present,</p>
                   <div>{time}</div>
                 </div>
 
                 <Hr className="h-fit px-2 pr-10">
-                  <TypingHeading className="text-xs text-white font-mono">Attendece will be Marke Between 8:00 PM to 9:00 PM</TypingHeading>
+                  <TypingHeading className="text-xs text-white font-mono">Attendace will be Marke Between 8:00 PM to 9:00 PM</TypingHeading>
                 </Hr>
 
               </div>

@@ -1,7 +1,7 @@
-export default function markAttendence(token){
+export default function markAttendance(token){
     return new Promise((resolve) => {
         if(!token) return resolve({miss: false, alert: {type: 'error', msg: 'No token found.'}});
-        fetch(`${window.location.origin}/api/users/attendence/mark-attendence`, {
+        fetch(`${window.location.origin}/api/users/attendance/mark-attendance`, {
             method: "GET",
             headers: {
                 'content-type': 'application/json',

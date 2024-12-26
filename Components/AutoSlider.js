@@ -2,18 +2,12 @@ import { delay } from "@/Functions/miniFuntions";
 import { Children, useEffect, useRef, useState } from "react"
 
 
-export default function AutoSlider({children, speed=5, effectTime=500, color='white', pixels=200}){
+export default function AutoSlider({children, speed=5, effectTime=500, color='white', size=20}){
 
-    const [childs, setChilds] = useState([])
-
-    const [effectBoxs, setEffectBoxs] = useState([])
+    const [childs, setChilds] = useState([]);
+    const [effectBoxs, setEffectBoxs] = useState([]);
 
     const effectBox = useRef(null);
-
-
-    function handelEffectBoxs(){
-        setEffectBoxs(Array.from({length: pixels}).map(_ => Math.random()));
-    }
 
     function sliderEffect(){
         if(!effectBox.current) return;
@@ -44,22 +38,31 @@ export default function AutoSlider({children, speed=5, effectTime=500, color='wh
     }
 
     useEffect(() => {
-        setChilds(Children.toArray(children))
-       
-        handelEffectBoxs();
+        setChilds(Children.toArray(children));
 
-        addEventListener('resize', handelEffectBoxs);
+        window.addEventListener('resize', handelEffectBoxs);
 
         const interval = setInterval(() => {
             handelSliding();
         }, (1000*speed))
 
         return () => {
-            clearInterval(interval)
-            removeEventListener('resize', handelEffectBoxs);   
+            clearInterval(interval);
+            window.removeEventListener('resize', handelEffectBoxs);
         }
-
     }, []);
+
+    function handelEffectBoxs(){
+        if(!effectBox.current) return;
+        let height = effectBox.current.offsetHeight;
+        let width = effectBox.current.offsetWidth;
+        let pixels = Math.round((width*height)/(size*size));
+        return setEffectBoxs(Array.from({length: pixels}).map(_ => Math.random()));
+    }
+
+    useEffect(() => {
+        handelEffectBoxs();
+    }, [effectBox, size])
 
     return (<>
         <div className="w-full h-full flex items-center relative overflow-hidden">
@@ -76,10 +79,12 @@ export default function AutoSlider({children, speed=5, effectTime=500, color='wh
                     return(
                         <div 
                             key={i} 
-                            className="w-5 h-5 aspect-square flex-1 opacity-0" 
+                            className="aspect-square flex-1 opacity-0" 
                             style={{
                                 transition: `all ${effectTime}ms ${delay}s`,
                                 backgroundColor: color,
+                                width: `${size}px`,
+                                height: `${size}px`
                             }}
                         ></div>
                     )
@@ -90,8 +95,8 @@ export default function AutoSlider({children, speed=5, effectTime=500, color='wh
     </>)
 }
 
-export function Card({children}){
-    return (<>
+export function Card({children, className}){
+    return (<div className={className}>
             {children}
-    </>)
+    </div>)
 }

@@ -1,7 +1,7 @@
 import alertMsg from "@/Functions/alertMsg";
 import connetToDb from "../../Middlewares/connectToDb";
 import verifyUserToken from "../../Middlewares/verifyUserToken";
-import attendenceModel from "../../Models/attendenceModel";
+import attendanceModel from "../../Models/attendanceModel";
 
 
 async function next(req, res) {
@@ -9,27 +9,27 @@ async function next(req, res) {
 
     let time = new Date().toTimeString().split(' ')[0].split(':');
 
-    if(time[0] > 21) return res.json({alert: {type: 'error', msg: 'You are leat attendence time is 20:00 to 21:59.'}});
-    if(time[0] < 20) return res.json({alert: {type: 'error', msg: 'You can only mark your attendence after 19:59'}, miss: false});
+    if(time[0] > 21) return res.json({alert: {type: 'error', msg: 'You are leat attendance time is 20:00 to 21:59.'}});
+    if(time[0] < 20) return res.json({alert: {type: 'error', msg: 'You can only mark your attendance after 19:59'}, miss: false});
 
     let user = req.user;
     let date = new Date().toLocaleDateString().split('/');
 
     try{
-        let attendence = await attendenceModel.findOne({userId: user._id});
-        if(!attendence) return res.json({alert: {type: 'error', msg: 'Attendence not found'}, miss: false});
+        let attendance = await attendanceModel.findOne({userId: user._id});
+        if(!attendance) return res.json({alert: {type: 'error', msg: 'Attendance not found'}, miss: false});
         
-        let attendenceStatus = attendence.status.get(date.join('/'));
+        let attendanceStatus = attendance.status.get(date.join('/'));
 
-        if(attendenceStatus == 'present') return res.json({alert: {type: 'info', msg: 'Attendece is already marked.'}, miss: true, attendenceStatus})
+        if(attendanceStatus == 'present') return res.json({alert: {type: 'info', msg: 'Attendace is already marked.'}, miss: true, attendanceStatus})
 
         let ip = await fetch('https://api.ipify.org');
         ip = await ip.text();
         if(ip != process.env.ORGANIZATION_IP) return res.json({alert: {type: 'error', msg: 'You are not connected to organization WiFi.'}, miss: false});
 
-        await attendence.markAttendence(true);
+        await attendance.markAttendance(true);
 
-        return res.json({alert: {type: 'success', msg: 'Attendence marked'}, miss: true, attendenceStatus: 'present'});
+        return res.json({alert: {type: 'success', msg: 'Attendance marked'}, miss: true, attendanceStatus: 'present'});
     } catch(error){
         console.log(error)
         return res.status(401).json({alert: alertMsg('internal-server-error'), miss: false, error});

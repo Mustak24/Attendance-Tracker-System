@@ -3,7 +3,7 @@ import Hr from "@/Components/Hr";
 import { Popover, PopoverOnHover } from "@/Components/Popover";
 import ShowIf, { ShowIfElse } from "@/Components/ShowIf";
 import { _AppContext } from "@/Contexts/AppContext";
-import markAllAttendence from "@/Functions/organization/markAllAttendence";
+import markAllAttendance from "@/Functions/organization/markAllAttendance";
 import { isNumber } from "@/Functions/miniFuntions";
 import getUsersInfo from "@/Functions/organization/getUsersInfo";
 import verifyOrganizationToken from "@/Functions/organization/verifyOrganizationToken";
@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
 import { LuCalendarClock } from "react-icons/lu";
-import getAttendenceInfo from "@/Functions/organization/getAttendenceInfo";
+import getAttendanceInfo from "@/Functions/organization/getAttendanceInfo";
 
 export default function Index(){
 
@@ -38,7 +38,7 @@ export default function Index(){
         setOrganizationInfo(organization);
         setLoad(true)
 
-        await markAllAttendence(token)
+        await markAllAttendance(token)
         handleGetUsersInfo();
     }
 
@@ -75,12 +75,15 @@ export default function Index(){
                             <div className="text-5xl">{organizationInfo.name}</div>
                         </div>
                         <div className="text-xs self-end">
-                            <Button onClick={() => router.push('/organization/create-user')}>Add new Student</Button>
+                            <Button scale={35} onClick={() => router.push('/organization/create-user')}>Add new User</Button>
                         </div>
                     </div>
-                    <div className="flex">
+                    <div className="flex gap-5 items-center">
                         <div className="text-xs">
-                            <Button onClick={() => router.push('/organization/update-attendance')}>Update Attendance</Button>
+                            <Button scale={40} text="royalblue" onClick={() => router.push('/organization/update-attendance')}>Update Attendance</Button>
+                        </div>
+                        <div className="text-xs">
+                            <Button text="crimson" scale={20}>Export</Button>
                         </div>
                     </div>
                     <Hr/>
@@ -88,7 +91,7 @@ export default function Index(){
 
                 <main className="flex flex-col overflow-y-scroll">
                     <div className="flex gap-5 px-2 sm:px-3 mb-2">
-                        <div className="max-sm:text-sm font-sans border-b-black border-b-2 px-2 text-center box-content">Attendece Table</div>
+                        <div className="max-sm:text-sm font-sans border-b-black border-b-2 px-2 text-center box-content">Attendace Table</div>
                         <div className="text-sm flex gap-2 items-center">
                             <div className="w-12 relative flex items-center border-b-2 border-black">
                                 <input 
@@ -134,12 +137,12 @@ export default function Index(){
                     <div className="w-full h-fil borde-2 rounded-md py-5 sm:px-1">
                         {
                             usersInfo.map((userInfo, index) => {
-                                return <AttendeceRow 
+                                return <AttendaceRow 
                                             key={index} 
                                             index={index+1} 
                                             name={userInfo.name} 
                                             roomNo={userInfo.roomNo} 
-                                            attendenceId={userInfo.attendenceId}
+                                            attendanceId={userInfo.attendanceId}
                                             mounth={mounth}
                                             year={year}
                                             updateInfo={updateInfo}
@@ -160,19 +163,19 @@ export default function Index(){
 }
 
 
-function AttendeceRow({index, name, roomNo, attendenceId, mounth, year, updateInfo}){
+function AttendaceRow({index, name, roomNo, attendanceId, mounth, year, updateInfo}){
 
     const [presentDays, setPresentDays] = useState([]);
-    const [attendenceStatus, setAttendenceStatus] = useState([]);
+    const [attendanceStatus, setAttendanceStatus] = useState([]);
     const [isUpdate, setUpdate] = useState(false);
 
-    async function hendalAttendenceInfo() { 
+    async function hendalAttendanceInfo() { 
         if(isUpdate) return;
 
         setUpdate(true);
-        let {miss, attendenceInfo} = await getAttendenceInfo(
+        let {miss, attendanceInfo} = await getAttendanceInfo(
                 localStorage.getItem('organization-token'), 
-                attendenceId, 
+                attendanceId, 
                 mounth, 
                 year
         );
@@ -180,16 +183,16 @@ function AttendeceRow({index, name, roomNo, attendenceId, mounth, year, updateIn
         setUpdate(false);
         if(!miss) return;
 
-        setPresentDays(attendenceInfo?.presentDays)
-        setAttendenceStatus(attendenceInfo?.attendenceStatus)
+        setPresentDays(attendanceInfo?.presentDays)
+        setAttendanceStatus(attendanceInfo?.attendanceStatus)
     }
 
     useEffect(() => {
-        hendalAttendenceInfo();
+        hendalAttendanceInfo();
     }, [updateInfo])
 
     return <>
-        <div className="user-attendence w-full mb-3 cursor-default" style={{animation: 'animate-opacity-0-to-1 .5s'}}>
+        <div className="user-attendance w-full mb-3 cursor-default" style={{animation: 'animate-opacity-0-to-1 .5s'}}>
             <div className="w-full flex text-sm sm:gap-5 gap-0 pl-2">
                 <div className="flex gap-2 sm:gap-1 max-sm:flex-col text-xs">
                     <div>
@@ -212,8 +215,8 @@ function AttendeceRow({index, name, roomNo, attendenceId, mounth, year, updateIn
                 </div>
                 <div className="days w-full flex items-center gap-1 flex-wrap"> 
                     <div className="relative border-2 flex items-center rounded-md overflow-hidden justify-center h-6 px-2 font-mono font-semibold text-xs" style={{animationDelay: `${Math.random()*1000}ms`}}>TP:{presentDays.length}</div>
-                    <div className="relative border-2 rounded-md overflow-hidden flex items-center justify-center gap-1 h-6 px-2 font-mono font-semibold text-xs" style={{animationDelay: `${Math.random()*1000}ms`}}>TA: {attendenceStatus.length - presentDays.length}</div>
-                    {attendenceStatus.map(status => {
+                    <div className="relative border-2 rounded-md overflow-hidden flex items-center justify-center gap-1 h-6 px-2 font-mono font-semibold text-xs" style={{animationDelay: `${Math.random()*1000}ms`}}>TA: {attendanceStatus.length - presentDays.length}</div>
+                    {attendanceStatus.map(status => {
                         return (
                             <div 
                                 key={status[0]} 

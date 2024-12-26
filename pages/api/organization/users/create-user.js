@@ -1,5 +1,5 @@
 import connetToDb from "../../Middlewares/connectToDb";
-import attendenceModel from "../../Models/attendenceModel";
+import attendanceModel from "../../Models/attendanceModel";
 import userModel from "../../Models/userModel";
 import alertMsg from "@/Functions/alertMsg";
 import verifyOrganizationToken from "../../Middlewares/verifyOrganizationToken";
@@ -25,11 +25,11 @@ async function next(req, res){
             organizationNo: organization.organizationNo,
             organizationId: organization._id
         });
-        let attendence = await attendenceModel.create({
+        let attendance = await attendanceModel.create({
             userId: user._id, 
             organizationId: organization._id,
         });
-        user.attendenceId = attendence._id;
+        user.attendanceId = attendance._id;
         await user.save();
 
         return res.json({alert: {type: 'success', msg: 'Successfully create accounte'}, miss: true});

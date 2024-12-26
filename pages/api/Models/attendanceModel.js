@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 
-const attendenceSchema = new mongoose.Schema({
+const attendanceSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
@@ -10,7 +10,7 @@ const attendenceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         res: 'organization'
     },
-    attendences: {
+    attendances: {
         type: Map,
         of: {
             type: Map,
@@ -30,16 +30,16 @@ const attendenceSchema = new mongoose.Schema({
     }
 });
 
-attendenceSchema.methods.markAttendence = async function(isPresent, date=null){
+attendanceSchema.methods.markAttendance = async function(isPresent, date=null){
     date = date || new Date().toLocaleDateString().split('/');
     
     this.status.set(date.join('/'), isPresent ? 'present' : 'absent')
 
-    if(!this.attendences.has(date[2])) this.attendences.set(date[2], new Map());
+    if(!this.attendances.has(date[2])) this.attendances.set(date[2], new Map());
 
-    if(!this.attendences.get(date[2]).has(date[1])) this.attendences.get(date[2]).set(date[1], new Map());
+    if(!this.attendances.get(date[2]).has(date[1])) this.attendances.get(date[2]).set(date[1], new Map());
 
-    this.attendences.get(date[2]).get(date[1]).set(date[0], {
+    this.attendances.get(date[2]).get(date[1]).set(date[0], {
         status: isPresent ? 'present' : 'absent',
         isPresent,
         time: new Date()
@@ -48,16 +48,16 @@ attendenceSchema.methods.markAttendence = async function(isPresent, date=null){
     await this.save();
 }
 
-attendenceSchema.methods.getTodayStatus = function(){
+attendanceSchema.methods.getTodayStatus = function(){
     let date = new Date().toLocaleDateString();
     return this.status.get(date) || 'not mark';
 }
 
-attendenceSchema.methods.addProperty = function(key, value){
+attendanceSchema.methods.addProperty = function(key, value){
     this[key] = value;
 }
 
-attendenceSchema.methods.getAttendenceStatus = function({mounth, year}){
+attendanceSchema.methods.getAttendanceStatus = function({mounth, year}){
     year = year || new Date().getFullYear();
     mounth = mounth || new Date().getMonth() + 1;
 
@@ -67,7 +67,7 @@ attendenceSchema.methods.getAttendenceStatus = function({mounth, year}){
 }
 
 
-attendenceSchema.methods.getPresentDays = function({mounth=null, year=null}){
+attendanceSchema.methods.getPresentDays = function({mounth=null, year=null}){
     year = year || new Date().getFullYear();
     mounth = mounth || new Date().getMonth() + 1;
 
@@ -84,6 +84,6 @@ attendenceSchema.methods.getPresentDays = function({mounth=null, year=null}){
 }
 
 
-const attendenceModel = mongoose.models.attendence ||  mongoose.model('attendence', attendenceSchema);
+const attendanceModel = mongoose.models.attendance ||  mongoose.model('attendance', attendanceSchema);
 
-export default attendenceModel;
+export default attendanceModel;

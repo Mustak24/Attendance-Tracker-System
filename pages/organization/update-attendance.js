@@ -3,7 +3,7 @@ import Hr from "@/Components/Hr";
 import ShowIf, { ShowIfElse } from "@/Components/ShowIf";
 import { _AppContext } from "@/Contexts/AppContext";
 import { isNumber } from "@/Functions/miniFuntions";
-import getAttendenceInfo from "@/Functions/organization/getAttendenceInfo";
+import getAttendanceInfo from "@/Functions/organization/getAttendanceInfo";
 import getUsersInfo from "@/Functions/organization/getUsersInfo";
 import updateAttendance from "@/Functions/organization/updateAttendace";
 import verifyOrganizationToken from "@/Functions/organization/verifyOrganizationToken";
@@ -133,12 +133,12 @@ export default function UpdateAttendance(){
                         {
                             usersInfo.map((user, index) => {
                                 return (
-                                    <AttendeceRow
+                                    <AttendaceRow
                                         key={index}
                                         index={index+1}
                                         name={user.name}
                                         roomNo={user.roomNo}
-                                        attendenceId={user.attendenceId}
+                                        attendanceId={user.attendanceId}
                                         mounth={mounth}
                                         year={year}
                                         date={date}
@@ -160,19 +160,19 @@ export default function UpdateAttendance(){
 }
 
 
-function AttendeceRow({index, name, roomNo, attendenceId, mounth, year, date, updateInfo}){
+function AttendaceRow({index, name, roomNo, attendanceId, mounth, year, date, updateInfo}){
 
     const [presentDays, setPresentDays] = useState([]);;
     const [isUpdate, setUpdate] = useState(false);
     const [isPresent, setIsPresent] = useState(null);
 
-    async function hendalAttendenceInfo() { 
+    async function hendalAttendanceInfo() { 
         if(isUpdate) return;
 
         setUpdate(true);
-        let {miss, attendenceInfo} = await getAttendenceInfo(
+        let {miss, attendanceInfo} = await getAttendanceInfo(
                 localStorage.getItem('organization-token'), 
-                attendenceId, 
+                attendanceId, 
                 mounth, 
                 year
         );
@@ -180,7 +180,7 @@ function AttendeceRow({index, name, roomNo, attendenceId, mounth, year, date, up
         setUpdate(false);
         if(!miss) return;
 
-        setPresentDays(attendenceInfo?.presentDays);
+        setPresentDays(attendanceInfo?.presentDays);
         return hendalIsPresent();
     }
 
@@ -198,11 +198,11 @@ function AttendeceRow({index, name, roomNo, attendenceId, mounth, year, date, up
     }, [date, presentDays]);
 
     useEffect(() => {
-        hendalAttendenceInfo();
+        hendalAttendanceInfo();
     }, [updateInfo])
 
     return <>
-        <div className="user-attendence w-full mb-3 cursor-default" style={{animation: 'animate-opacity-0-to-1 .5s'}}>
+        <div className="user-attendance w-full mb-3 cursor-default" style={{animation: 'animate-opacity-0-to-1 .5s'}}>
             <div className="w-full flex text-sm sm:gap-5 gap-2 pl-2">
                 <div className="flex gap-2 sm:gap-1 max-sm:flex-col text-xs">
                     <div>
@@ -223,7 +223,7 @@ function AttendeceRow({index, name, roomNo, attendenceId, mounth, year, date, up
                         <Hr className="h-[1px] my-[0px]"/>
                     </div>
                 </div>
-                <label htmlFor={attendenceId} className="days w-full flex items-center self-start max-sm:ml-5">  
+                <label htmlFor={attendanceId} className="days w-full flex items-center self-start max-sm:ml-5">  
                     <div 
                         className="flex items-center text-white font-sans font-semibold gap-4 rounded-md w-fit px-2 h-6"
                         style={{
@@ -246,13 +246,13 @@ function AttendeceRow({index, name, roomNo, attendenceId, mounth, year, date, up
                         </div>
 
                         <input 
-                            id={attendenceId}
+                            id={attendanceId}
                             type="checkbox" 
                             checked={isPresent}
                             onChange={() => setIsPresent(() => !isPresent)}
                         />
 
-                        <input hidden name={attendenceId} value={isPresent ? 'present' : 'absent'}/>
+                        <input hidden name={attendanceId} value={isPresent ? 'present' : 'absent'}/>
                     </div>
                 </label>
             </div>

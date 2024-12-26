@@ -1,7 +1,7 @@
 import verifyWardenToken from "../../Middlewares/verifyOrganizationToken";
 import connetToDb from "../../Middlewares/connectToDb";
 import alertMsg from "@/Functions/alertMsg";
-import attendenceModel from "../../Models/attendenceModel";
+import attendanceModel from "../../Models/attendanceModel";
 
 
 async function next(req, res) {
@@ -14,12 +14,12 @@ async function next(req, res) {
 
     let {organization} = req; 
     try{
-        let attendences = await attendenceModel.find({organizationId: organization._id});
+        let attendances = await attendanceModel.find({organizationId: organization._id});
         
-        let temp = attendences.map(async (attendance) => attendance.markAttendence(attendanceInfo[attendance._id] == 'present', time));
+        let temp = attendances.map(async (attendance) => attendance.markAttendance(attendanceInfo[attendance._id] == 'present', time));
         await Promise.all(temp);
 
-        return res.status(200).json({alert: {type: 'success', msg: 'All attendence are updated.'}, miss: true});
+        return res.status(200).json({alert: {type: 'success', msg: 'All attendance are updated.'}, miss: true});
     } catch(error){
         return res.status(500).json({alert: alertMsg('internal-server-error'), miss: false});
     }

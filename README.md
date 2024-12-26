@@ -1,24 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+## For preview
+Go or click [https://ex2406.netlify.app](https://ex2406.netlify.app)
+
+
 
 ## Getting Started
 
-First, run the development server:
+First, copy, clone, or download the repositry then,
+
+then run following commmandes:
+
 
 ```bash
+npm install
+```
+```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Setup .env file
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- JWT_KEY = ***XYZ
+- DB_USERNAME = ***XYZ
+- DB_PASSWORD = ***XYZ
+- DB_ORGANIZATION_USERNAME_KEY = ***XYZ
+- ORGANIZATION_IP = ***XYZ
+
+## APIs Routes
+
+- `Middlewares`
+    - connectToDB
+    - verifyOrganizationToken
+    - verifyUserToken
+- `organization`
+    - attendences
+        - get-info
+        - mark-today-all-attendence
+        - update-attendace
+    - users
+        - create-user
+        - get-all-info
+    - login
+    - signup
+    - verify-token
+- `users`
+    - attendence
+        - get-today-attendence-status
+        - mark-attendence
+    - login
+    - verify-token
+
+##
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
 
