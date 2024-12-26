@@ -8,12 +8,15 @@ import { isNumber } from "@/Functions/miniFuntions";
 import getUsersInfo from "@/Functions/organization/getUsersInfo";
 import verifyOrganizationToken from "@/Functions/organization/verifyOrganizationToken";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
 import { LuCalendarClock } from "react-icons/lu";
 import getAttendanceInfo from "@/Functions/organization/getAttendanceInfo";
+import { MdOutlineDownloadForOffline } from "react-icons/md";
 
 export default function Index(){
+
+    const {setAlert} = useContext(_AppContext)
 
     const router = useRouter()
 
@@ -23,6 +26,7 @@ export default function Index(){
     const [updateInfo, setUpdateInfo] = useState(0)
     const [year, setYear] = useState('');
     const [mounth, setMounth] = useState('');
+    const [isCsvDownloading, setCsvDownloading] = useState(false);
 
 
     async function handleGetUsersInfo(){
@@ -63,6 +67,32 @@ export default function Index(){
         router.push('/');
     }
 
+    async function downloadData() {
+        setCsvDownloading(true)
+        let res = await fetch(`${window.location.origin}/api/download/attendance?mounth=${mounth}&year=${year}`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json',
+                'authorization': `Bearer ${localStorage.getItem('organization-token')}`
+            }
+        });
+        res = await res.blob();
+
+        let url = URL.createObjectURL(res);
+
+        let a = document.createElement('a');
+
+        a.href = url;
+        a.download = `attendance_${year}_${mounth}.csv`;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        URL.revokeObjectURL(url);
+        setCsvDownloading(false);
+    }
+
 
 
     return (
@@ -83,7 +113,12 @@ export default function Index(){
                             <Button scale={40} text="royalblue" onClick={() => router.push('/organization/update-attendance')}>Update Attendance</Button>
                         </div>
                         <div className="text-xs">
-                            <Button text="crimson" scale={20}>Export</Button>
+                            <Button text="crimson" scale={20} onClick={downloadData} isLoading={isCsvDownloading}>
+                                <div className="flex w-fit gap-2 items-center">
+                                    <MdOutlineDownloadForOffline className="size-5" />
+                                    CSV File
+                                </div>
+                            </Button>
                         </div>
                     </div>
                     <Hr/>
@@ -97,7 +132,6 @@ export default function Index(){
                                 <input 
                                     value={year} 
                                     type="text" 
-                                    placeholder="Year" 
                                     maxLength={4} 
                                     className="w-full text-center outline-none bg-transparent border-none" 
                                     onBlur={(e) => {
@@ -115,10 +149,9 @@ export default function Index(){
                                 <input 
                                     value={mounth} 
                                     type="text" 
-                                    placeholder="Year" 
                                     maxLength={2}
                                     className="w-full text-center outline-none bg-transparent border-none" 
-                                    onBlur={(e) => setMounth((mounth) => mounth > 1 ? mounth.padStart(2, '0') : '01')}
+                                    onBlur={() => setMounth((mounth) => mounth > 1 ? mounth.padStart(2, '0') : '01')}
                                     onChange={(e) => {
                                         let {value} = e.target
                                         if(!isNumber(value)) return;
@@ -128,7 +161,10 @@ export default function Index(){
                             </div>
                             <button 
                                 className="relative ml-1 font-sans text-[13px] border-2 border-black font-semibold opacity-90 sm:hover:bg-black sm:hover:text-white transition-all active:bg-black active:text-white px-2 rounded-md py-1 animate-bounce h-6 top-[6px] whitespace-nowrap flex items-center gap-1"
-                                onClick={() => setUpdateInfo((updateInfo) => updateInfo + 1)}
+                                onClick={() =>{ 
+                                    setAlert((alerts) => [...alerts, {type: 'info', msg: `Attendance Table date is ${year}/${mounth}`}])
+                                    setUpdateInfo((updateInfo) => updateInfo + 1);
+                                }}
                             >
                                 Set <LuCalendarClock/>
                             </button>

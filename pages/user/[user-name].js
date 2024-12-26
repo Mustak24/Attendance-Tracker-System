@@ -40,7 +40,7 @@ export default function Home() {
     setAlert((alerts) => [...alerts, alert]);
 
     return getAttendanceStatus(token).then(({attendanceStatus}) => {
-        setAttendanceStatus(attendanceStatus || 'Not Set');
+        setAttendanceStatus(attendanceStatus || 'Not Marked');
     })
   }
 

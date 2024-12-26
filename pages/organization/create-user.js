@@ -23,7 +23,6 @@ export default function Login(){
 
     async function handleSubmit(e) {
         e.preventDefault()
-        e.target.reset()
         
         if(!isOnline()) return setAlert((alerts) => [...alerts, {type: 'error', msg: 'No internet conections.'}]);
         
@@ -32,11 +31,14 @@ export default function Login(){
         if(isObjectEmpty(formData)) 
             return setAlert((alerts) => [...alerts, {type: 'warning', msg: 'Please fill all form fields.'}]);
 
+        
         setLoading(true);
-        let {alert} = await createUser(localStorage.getItem('organization-token'), formData);
+        let {alert, miss} = await createUser(localStorage.getItem('organization-token'), formData);
         setLoading(false);
 
         setAlert((alerts) => [...alerts, alert]);
+
+        if(miss) e.target.reset();
     }
 
     async function verify(){

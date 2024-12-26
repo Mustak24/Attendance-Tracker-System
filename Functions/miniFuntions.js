@@ -38,3 +38,7 @@ export function delay(time){
         setTimeout(() => res(true), time);
     });
 }
+
+export function newArr(len=0, fun=(_,i)=>i){
+    return Array.from({length: len}).map(fun);
+}

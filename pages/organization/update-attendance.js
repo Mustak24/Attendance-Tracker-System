@@ -55,10 +55,8 @@ export default function UpdateAttendance(){
         let formData = Object.fromEntries(new FormData(attendaceForm.current));
         let time = [date, mounth, year];
 
-        let {miss, alert} = await updateAttendance(localStorage.getItem('organization-token'), formData, time);
+        let {alert} = await updateAttendance(localStorage.getItem('organization-token'), formData, time);
         setAlert((alerts) => [...alerts, alert]);
-
-        if(miss) return router.push('/organization')
     }
 
     return (<>
