@@ -3,7 +3,7 @@ import connetToDb from "../Middlewares/connectToDb";
 import verifyOrganizationToken from "../Middlewares/verifyOrganizationToken";
 import attendanceModel from "../Models/attendanceModel";
 import userModel from "../Models/userModel";
-import { newArr } from "@/Functions/miniFuntions";
+import { capitalize, newArr } from "@/Functions/miniFuntions";
 
 
 async function next(req, res){
@@ -17,23 +17,22 @@ async function next(req, res){
         let days = new Date(year, mounth, 0).getDate();
 
         let csvArr = [
-            ['Sr no.', 'Name', 'Room No', 'Days', ...newArr(days-1, ()=>''), 'Total present days'],
-            ['', '', '', ...newArr(days, (_, i)=>i+1)]
+            ['Sr no.', 'Name', 'Room No', 'Mobile No','Days', ...newArr(days-1, ()=>''), 'Total Present Days'],
+            ['', '', '', '', ...newArr(days, (_, i)=>i+1)]
         ]
 
         let attendances = await attendanceModel.find({organizationId: organization._id});
         let srNo = 1;
         for(let attendance of attendances){
             let userInfo = await userModel.findById(attendance.userId);
-            let attendanceStatus = attendance.getAttendanceStatus({mounth, year}).map(e => e[1]);
+            let attendanceStatus = attendance.getAttendanceStatus({mounth, year}).map(e => capitalize(e[1]));
             let totalPresent = attendance.getPresentDays({mounth, year}).length;
-            csvArr.push([srNo++, userInfo.name, userInfo.roomNo, ...attendanceStatus, totalPresent]);
+            csvArr.push([srNo++, capitalize(userInfo.name), userInfo.roomNo, userInfo.mobileNo, ...attendanceStatus, totalPresent]);
         }
         let csvData = csvArr.map(e => e.join(' ,')).join('\n');
 
         return res.send(csvData);
     } catch(error){
-        console.log(error)
         return res.json({miss: false, alert: alertMsg('internal-server-error')}, error)
     }
 }

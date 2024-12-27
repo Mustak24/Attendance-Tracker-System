@@ -76,7 +76,7 @@ export default function Login(){
                             <LongWidthBnt isLoading={isLoading} title='Login' className='w-full max-md:hidden' />
                             <Button isLoading={isLoading} title='Login' className='md:hidden w-full border-2' />
                         </div>
-                        <div className="text-sm flex gap-2 font-mono text-black">add Member? <Link href={'/organization/signup'} className="opacity-70 active:opacity-100 sm:hover:opacity-100 font-semibold">Sign-up</Link></div>
+                        <div className="text-sm flex items-center justify-center flex-wrap gap-2 font-mono text-black">add Member? <Link href={'/organization/signup'} className="opacity-70 active:opacity-100 sm:hover:opacity-100 font-semibold">Sign-up</Link></div>
                     </form>
                 </ShowIf>
             </main>

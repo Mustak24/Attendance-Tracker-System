@@ -25,9 +25,11 @@ const userSchema = new mongoose.Schema({
         max: 50,
     },
     mobileNo: {
-        type: Number,
+        type: String,
         required: true,
-        select: false
+        select: false,
+        min: 10,
+        max: 10
     },
     roomNo:{
         type: Number,

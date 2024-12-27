@@ -42,3 +42,7 @@ export function delay(time){
 export function newArr(len=0, fun=(_,i)=>i){
     return Array.from({length: len}).map(fun);
 }
+
+export function capitalize(str){
+    return str.split(' ').map(word => word[0].toUpperCase() + word.slice(1)).join(' ');
+}

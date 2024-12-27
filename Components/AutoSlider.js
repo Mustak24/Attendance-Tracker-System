@@ -40,6 +40,7 @@ export default function AutoSlider({children, speed=5, effectTime=500, color='wh
     useEffect(() => {
         setChilds(Children.toArray(children));
 
+        handelEffectBoxs();
         window.addEventListener('resize', handelEffectBoxs);
 
         const interval = setInterval(() => {
@@ -62,7 +63,7 @@ export default function AutoSlider({children, speed=5, effectTime=500, color='wh
 
     useEffect(() => {
         handelEffectBoxs();
-    }, [effectBox, size])
+    }, [effectBox.current, size])
 
     return (<>
         <div className="w-full h-full flex items-center relative overflow-hidden">
