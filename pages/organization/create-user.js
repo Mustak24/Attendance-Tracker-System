@@ -9,7 +9,7 @@ import { FaRegUser } from "react-icons/fa";
 import createUser from "@/Functions/organization/createUser";
 import ShowIf, { ShowIfElse } from "@/Components/ShowIf";
 import verifyOrganizationToken from "@/Functions/organization/verifyOrganizationToken";
-import { set } from "mongoose";
+
 
 
 
@@ -178,26 +178,28 @@ export default function Login(){
                         <div className="text-sm flex items-center justify-center flex-wrap gap-2 font-mono text-black">
                     
                             {
-                                `This Form will add new user in you organization. You can also add user by upload`.split(' ').map((text, index) => <span key={index}>{text}</span>)
+                                `You can also add user by upload`.split(' ').map((text, index) => <span key={index}>{text}</span>)
                             } 
-                            <ShowIfElse 
-                                when={!isFileDataValid} 
-                                Else={
-                                        <span 
-                                            className="font-semibold cursor-pointer" 
-                                            onClick={() => createUsers(fileData)}
+                            <div className="text-sky-500 text-center">
+                                <ShowIfElse 
+                                    when={!isFileDataValid} 
+                                    Else={
+                                            <span 
+                                                className="font-semibold cursor-pointer" 
+                                                onClick={() => createUsers(fileData)}
+                                            >
+                                                Crate Acconuts {`( ${filename.length > 15 ? '...' + filename.slice(15) : filename} )`}
+                                            </span>
+                                        }
                                         >
-                                            Crate Acconuts {`( ${filename.length > 15 ? '...' + filename.slice(15) : filename} )`}
-                                        </span>
-                                    }
-                            >
-                                <label className="font-mono font-semibold cursor-pointer">
-                                    <ShowIfElse when={!isFileDataLoading} Else={'loading ...'}>
-                                        JSON file or CSV file
-                                        <input onChange={handleFileData} hidden type="file" accept=".json, .csv"/>
-                                    </ShowIfElse>
-                                </label>
-                            </ShowIfElse>
+                                    <label className="font-mono font-semibold cursor-pointer">
+                                        <ShowIfElse when={!isFileDataLoading} Else={'loading ...'}>
+                                            JSON file or CSV file
+                                            <input onChange={handleFileData} hidden type="file" accept=".json, .csv"/>
+                                        </ShowIfElse>
+                                    </label>
+                                </ShowIfElse>
+                            </div>
                         </div>
                     </form>
                 </main>

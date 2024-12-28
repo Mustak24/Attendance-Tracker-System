@@ -10,7 +10,7 @@ import verifyOrganizationToken from "@/Functions/organization/verifyOrganization
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
-import { LuCalendarClock } from "react-icons/lu";
+import { LuCalendarClock, LuUserRoundPlus } from "react-icons/lu";
 import getAttendanceInfo from "@/Functions/organization/getAttendanceInfo";
 import { MdOutlineDownloadForOffline } from "react-icons/md";
 
@@ -102,10 +102,18 @@ export default function Index(){
                     <div className="flex gap-5 sm:gap-10">
                         <div>
                             <div>Hey,</div>
-                            <div className="text-5xl">{organizationInfo.name}</div>
+                            <div className="text-5xl capitalize">{
+                                (organizationInfo?.name || '').length < 10 ? 
+                                    organizationInfo.name
+                                    : organizationInfo.name.slice(0,10) + '...'
+                            }</div>
                         </div>
                         <div className="text-xs self-end">
-                            <Button onClick={() => router.push('/organization/create-user')}>Add new User</Button>
+                            <Button onClick={() => router.push('/organization/create-user')}>
+                                <div className="flex gap-2 items-center">
+                                    <LuUserRoundPlus className="size-4" /> User
+                                </div>
+                            </Button>
                         </div>
                     </div>
                     <div className="flex gap-5 items-center">
@@ -236,10 +244,10 @@ function AttendaceRow({index, name, roomNo, attendanceId, mounth, year, updateIn
                         <Hr className="h-[1px] my-[0px]"/>
                     </div>
                     <div>
-                        <div className="relative min-w-24 flex items-center group">
+                        <div className="relative min-w-24 flex items-center group capitalize">
                             <ShowIfElse when={name.length > 10} Else={name}>
                                 {name.slice(0,10)} ...
-                                <div className="absolute whitespace-nowrap bottom-full left-2  px-2 py-1 rounded-md max-w-[200px] bg-black opacity-70 hidden group-hover:flex">{name}</div>
+                                <div className="absolute whitespace-nowrap bottom-full left-2  px-2 py-1 rounded-md max-w-[200px] bg-black opacity-70 hidden group-hover:flex text-white">{name}</div>
                             </ShowIfElse>
                         </div>
                         <Hr className="h-[1px] my-[0px]"/>
@@ -256,7 +264,7 @@ function AttendaceRow({index, name, roomNo, attendanceId, mounth, year, updateIn
                         return (
                             <div 
                                 key={status[0]} 
-                                className="relative flex items-center justify-center rounded-[5px] opacity-0 border-none size-6 font-mono font-semibold text-white"
+                                className="relative flex items-center justify-center rounded-[5px] opacity-0 border-none size-6 font-mono font-semibold text-white transition-all sm:hover:scale-75 sm:duration-100"
                                 style={{
                                     backgroundColor: status[1] == 'present' ? 'rgb(0,255,0,.8)' : status[1] == 'absent' ? 'rgb(255,0,0,.8)' : 'rgb(0,0,0,.8)',
                                     animation: `animate-opacity-0-to-1 1s ${Math.random()}s forwards`

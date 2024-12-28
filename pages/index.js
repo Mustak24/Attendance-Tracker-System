@@ -33,7 +33,7 @@ export default function Home() {
         <div className="sm:self-start self-end flex relative top-0 right-0 max-w-[470px] w-full aspect-square">
           <Image height={400} width={400} src={'/index-main.svg'} alt="404" className="absolute top-0 right-0"   />
           <div className="absolute right-4 top-4 sm:text-sm text-xs">
-            <Button onClick={() => router.push('/user/login')}>User Login</Button>
+            <Button onClick={() => router.push('/user/login')} text="royalblue">User Login</Button>
           </div>
         </div>
 

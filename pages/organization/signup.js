@@ -65,7 +65,7 @@ export default function AdminSignup(){
                             placeholder="Sr. No"
                             maxLength={2}
                             required
-                            className="border-2 bg-transparent rounded-full border-black placeholder:text-black placeholder:opacity-70 placeholder:font-thin outline-none max-w-24 h-10 pl-4 pr-3 text-sm font-semibold focus:border-sky-500 "
+                            className="border-2 bg-transparent rounded-full border-black placeholder:text-black placeholder:opacity-70 placeholder:font-normal outline-none max-w-24 h-10 pl-4 pr-3 text-sm font-semibold focus:border-sky-500 "
                         />
                     </div>
                     <Input required={true} minLength={5} name='username' placeholder="Enter Username" />
@@ -74,7 +74,7 @@ export default function AdminSignup(){
                         <LongWidthBnt isLoading={isLoading} title='Sign Up' className='w-full max-md:hidden' />
                         <Button isLoading={isLoading} title='Sign Up' className='md:hidden w-full border-2' />
                     </div>
-                    <div className="text-sm flex items-center justify-center flex-wrap gap-2 text-black font-mono">Have a account? <Link href={'/organization/login'} className="opacity-70 active:opacity-100 sm:hover:opacity-100 font-semibold">login</Link></div>
+                    <div className="text-sm flex items-center justify-center flex-wrap gap-2 text-black font-mono">Have a account? <Link href={'/organization/login'} className="opacity-70 active:opacity-100 sm:hover:opacity-100 font-semibold text-sky-500">login</Link></div>
                 </form>
             </main>
         </div>

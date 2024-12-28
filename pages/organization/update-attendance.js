@@ -149,7 +149,7 @@ export default function UpdateAttendance(){
                 </form>
 
                 <div className="text-xs fixed bottom-2 left-2 sm:left-10">
-                    <Button onClick={hendalForm}>Update</Button>
+                    <Button onClick={hendalForm} text={'royalblue'}>Update</Button>
                 </div>   
             </ShowIf>
         </div>

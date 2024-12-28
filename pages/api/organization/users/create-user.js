@@ -15,6 +15,8 @@ async function next(req, res){
     if(!(username && password && name && mobileNo && roomNo)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
 
     try{
+        let userExist = await userModel.findOne({username});
+        if(userExist) return res.json({alert: {type: 'error', msg: `${username} user was allready user by other user.`}, miss: false});
 
         let user = await userModel.create({
             name, 
