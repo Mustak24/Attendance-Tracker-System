@@ -18,14 +18,28 @@ const organizationSchema = new mongoose.Schema({
         select: false
     },
     organizationNo: {
-        type: Number,
+        type: String,
         require: true,
         unique: true
+    },
+    ip: {
+        type: String,
+        require: true
+    },
+    attendanceTime: {
+        hr: {
+            type: Number,
+            default: 20
+        },
+        min: {
+            type: Number,
+            default: 15
+        }
     },
     time: {
         type: Date,
         default: Date.now
-    }
+    },
 });
 
 organizationSchema.methods.createToken = function(){

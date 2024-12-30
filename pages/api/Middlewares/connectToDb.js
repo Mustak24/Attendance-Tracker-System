@@ -7,6 +7,6 @@ export default async function connetToDb(req, res, next){
         await mongoose.connect(url);
         return next(req, res);
     } catch(error){
-        res.status(500).json({alert: {type: 'error', msg: 'Fail to connect to database'}, error, miss: false});
+        res.json({alert: {type: 'error', msg: 'Fail to connect to database'}, error, miss: false});
     }
 }

@@ -46,3 +46,7 @@ export function newArr(len=0, fun=(_,i)=>i){
 export function capitalize(str){
     return str.split(' ').map(word => word[0].toUpperCase() + word.slice(1)).join(' ');
 }
+
+export function getIp(){
+    return new Promise(resolve => fetch('https://api.ipify.org').then(res => res.text()).then(res => resolve(res)));
+}

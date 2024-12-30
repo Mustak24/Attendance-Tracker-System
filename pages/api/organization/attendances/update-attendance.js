@@ -5,10 +5,10 @@ import attendanceModel from "../../Models/attendanceModel";
 
 
 async function next(req, res) {
-    if(req.method != 'POST') return res.status(401).json({alert: alertMsg('invalid-req-method'), miss: false});
+    if(req.method != 'POST') return res.json({alert: alertMsg('invalid-req-method'), miss: false});
 
     let {time, attendanceInfo} = req.body;
-    if(!(time && attendanceInfo && time[0] && time[1] && time[2])) return res.status(201).json({alert: alertMsg('incomplite-info'), miss: false});
+    if(!(time && attendanceInfo && time[0] && time[1] && time[2])) return res.json({alert: alertMsg('incomplite-info'), miss: false});
 
     time = time.map(e => String(e))
 
@@ -19,9 +19,9 @@ async function next(req, res) {
         let temp = attendances.map(async (attendance) => attendance.markAttendance(attendanceInfo[attendance._id] == 'present', time));
         await Promise.all(temp);
 
-        return res.status(200).json({alert: {type: 'success', msg: 'All attendance are updated.'}, miss: true});
+        return res.json({alert: {type: 'success', msg: 'All attendance are updated.'}, miss: true});
     } catch(error){
-        return res.status(500).json({alert: alertMsg('internal-server-error'), miss: false});
+        return res.json({alert: alertMsg('internal-server-error'), miss: false});
     }
 }
 

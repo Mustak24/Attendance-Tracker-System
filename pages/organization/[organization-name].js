@@ -116,7 +116,7 @@ export default function Index(){
                             </Button>
                         </div>
                     </div>
-                    <div className="flex gap-5 items-center">
+                    <div className="flex flex-wrap gap-5 items-center">
                         <div className="text-xs">
                             <Button text="royalblue" onClick={() => router.push('/organization/update-attendance')}>Update Attendance</Button>
                         </div>
@@ -201,6 +201,9 @@ export default function Index(){
                         <Popover className={'text-xs right-3 font-mono rounded-md bg-[rgb(255,255,255,.5)] py-1 px-3 max-sm:hidden'}>Logout</Popover>
                     </PopoverOnHover>
                 </button>
+                <div className="text-xs fixed bottom-2 left-2">
+                    <Button text="royalblue" onClick={() => router.push('/organization/update-info')}>Update Info</Button>
+                </div>
             </ShowIf>
         </div>
     )

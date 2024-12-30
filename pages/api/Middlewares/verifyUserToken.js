@@ -6,8 +6,8 @@ import alertMsg from '@/Functions/alertMsg';
 export default async function verifyUserToken(req, res, next){
     
     let token = req.headers['authorization'];
-    if(!(token && token.split(' ')[1])) return res.status(401).json({alert: alertMsg('no-token'), miss: false});
-    if(token.split(' ')[0] !== 'Bearer') return res.status(401).json({alert: alertMsg('invalid-token'), miss: false});
+    if(!(token && token.split(' ')[1])) return res.json({alert: alertMsg('no-token'), miss: false});
+    if(token.split(' ')[0] !== 'Bearer') return res.json({alert: alertMsg('invalid-token'), miss: false});
     token = token.split(' ')[1];
 
     try{
@@ -19,6 +19,6 @@ export default async function verifyUserToken(req, res, next){
         req.user = user;
         return next(req, res);
     } catch(error){
-        return res.status(401).json({alert: alertMsg('invalid-token'), miss: false, error});
+        return res.json({alert: alertMsg('invalid-token'), miss: false, error});
     }
 }

@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import organizationModel from './organizationModel';
+import { getIp } from '@/Functions/miniFuntions';
 
 
 const attendanceSchema = new mongoose.Schema({
@@ -81,6 +83,12 @@ attendanceSchema.methods.getPresentDays = function({mounth=null, year=null}){
     }
 
     return presentDays;   
+}
+
+attendanceSchema.methods.isValidIp = async function(){
+    let userIP = await getIp();
+    let organization = await organizationModel.findById(this.organizationId);
+    return Boolean(organization.ip == userIP);
 }
 
 

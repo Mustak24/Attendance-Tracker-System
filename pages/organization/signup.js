@@ -2,10 +2,10 @@ import Button, { LongWidthBnt } from "@/Components/Button";
 import { TypingHeading } from "@/Components/Heading";
 import { Input } from "@/Components/Input";
 import { _AppContext } from "@/Contexts/AppContext";
-import { isObjectEmpty, isOnline } from "@/Functions/miniFuntions";
+import { getIp, isObjectEmpty, isOnline } from "@/Functions/miniFuntions";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export default function AdminSignup(){
 
@@ -13,7 +13,8 @@ export default function AdminSignup(){
     
     const router = useRouter()
 
-    const [isLoading, setLoading] = useState(false)
+    const [isLoading, setLoading] = useState(false);
+    const [ip, setIp] = useState('');
 
     async function handleSubmit(e){
         e.preventDefault()
@@ -30,6 +31,7 @@ export default function AdminSignup(){
             body: JSON.stringify(formData)
         })
         let {alert, miss, token, organization} = await res.json();
+        
         setLoading(false)
 
         setAlert((alerts) => [...alerts, alert]);
@@ -38,6 +40,10 @@ export default function AdminSignup(){
         localStorage.setItem('organization-token', token);
         return router.push(`/organization/${organization.name}`)
     }
+
+    useEffect(() => {
+        getIp().then(res => setIp(res));
+    }, [])
 
 
     return (
@@ -50,6 +56,9 @@ export default function AdminSignup(){
             <main className="w-full h-full flex items-center flex-col justify-center p-5 relative max-sm:bottom-20">
                 <TypingHeading className="font-serif text-2xl my-5">- Sign Up Form -</TypingHeading>
                 <form onSubmit={handleSubmit} className="flex items-center flex-col gap-4 max-w-[500px] w-full" >
+                    <div className="text-xs">
+                        Your Current IP is {ip}
+                    </div>
                     <div className="flex flex-wrap [&_input]:flex-1 w-full gap-5"> 
                         <input 
                             name="name"

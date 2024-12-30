@@ -5,7 +5,7 @@ import attendanceModel from "../../Models/attendanceModel";
 
 
 async function next(req, res) {
-    if(req.method != 'GET') return res.status(401).json({alert: alertMsg('invalid-req-method'), miss: false});
+    if(req.method != 'GET') return res.json({alert: alertMsg('invalid-req-method'), miss: false});
 
     let {query} = req
     let {id, mounth, year} = query
@@ -13,7 +13,7 @@ async function next(req, res) {
     year = year || new Date().getFullYear();
     mounth = mounth || new Date().getMonth() + 1;
 
-    if(!id) return res.status(201).json({alert: alertMsg('incomplite-info'), miss: false});
+    if(!id) return res.json({alert: alertMsg('incomplite-info'), miss: false});
 
     try{
         var attendance = await attendanceModel.findById(id);
@@ -23,9 +23,9 @@ async function next(req, res) {
         attendanceInfo['attendanceStatus'] = attendance.getAttendanceStatus({mounth, year});
         attendanceInfo['presentDays'] = attendance.getPresentDays({mounth, year});
 
-        return res.status(200).json({alert: {type: 'success', msg: 'Attendance finde successfully.'}, miss: true, attendanceInfo});
+        return res.json({alert: {type: 'success', msg: 'Attendance finde successfully.'}, miss: true, attendanceInfo});
     } catch(e){
-        return res.status(500).json({alert: alertMsg('internal-server-error'), miss: false})
+        return res.json({alert: alertMsg('internal-server-error'), miss: false})
     }
 }
 
