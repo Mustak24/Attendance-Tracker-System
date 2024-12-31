@@ -71,7 +71,7 @@ export default function AdminSignup(){
                         <input 
                             name="organizationNo"
                             type="text"  
-                            placeholder="Sr. No"
+                            placeholder="Or. No"
                             maxLength={2}
                             required
                             className="border-2 bg-transparent rounded-full border-black placeholder:text-black placeholder:opacity-70 placeholder:font-normal outline-none max-w-24 h-10 pl-4 pr-3 text-sm font-semibold focus:border-sky-500 "

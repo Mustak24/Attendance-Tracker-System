@@ -15,8 +15,8 @@ async function next(req, res){
     if(!(username && password && name && mobileNo && roomNo)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
 
     try{
-        let userExist = await userModel.findOne({username});
-        if(userExist) return res.json({alert: {type: 'error', msg: `${username} user was allready user by other user.`}, miss: false});
+        let userExist = await userModel.findOne({username, organizationId: organization._id});
+        if(userExist) return res.json({alert: {type: 'error', msg: `${username} user was allready use by other user.`}, miss: false});
 
         let user = await userModel.create({
             name, 
@@ -27,6 +27,7 @@ async function next(req, res){
             organizationNo: organization.organizationNo,
             organizationId: organization._id
         });
+        
         let attendance = await attendanceModel.create({
             userId: user._id, 
             organizationId: organization._id,

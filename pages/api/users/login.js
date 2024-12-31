@@ -4,14 +4,14 @@ import userModel from "../Models/userModel";
 
 
 async function next(req, res) {
-    let {username, password} = req.body;
+    let {username, password, organizationNo} = req.body;
 
-    if(!(username && password)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
+    if(!(username && password && organizationNo)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
     try{    
-        let user = await userModel.findOne({username}).select('+password');
+        let user = await userModel.findOne({username, organizationNo}).select('+password');
         if(!(user && user.comparePassword(password))) return res.json({alert: alertMsg('invalid-info'), miss: false});
 
-        let token = user.createToken();
+        let token = await user.createToken();
 
         user = user.toObject();
         delete user.password;

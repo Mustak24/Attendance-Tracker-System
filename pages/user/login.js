@@ -64,8 +64,25 @@ export default function Login(){
                 <ShowIf when={isLoad} loading={true}>
                     <TypingHeading className="font-serif text-2xl my-5">- User Login Form -</TypingHeading>
                     <form onSubmit={handleSubmit} className="flex items-center flex-col gap-4 max-w-[500px] w-full" >
-                        <Input minLength={6} name={'username'} placeholder="Enter Username" />
-                        <Input minLength={6} name={'password'} placeholder="Enter Password" type='password' />
+                        <div className="flex flex-wrap-reverse [&_input]:flex-1 w-full gap-5"> 
+                            <input 
+                                name="username"
+                                type="text"  
+                                placeholder="Enter username"
+                                minLength={3}
+                                required
+                                className="border-2 bg-transparent rounded-full border-black placeholder:text-black placeholder:font-normal placeholder:opacity-70 outline-none min-w-[150px] h-10 pl-4 pr-3 text-sm font-semibold focus:border-sky-500  "
+                            />
+                            <input 
+                                name="organizationNo"
+                                type="text"  
+                                placeholder="Or. No"
+                                maxLength={5}
+                                required
+                                className="border-2 bg-transparent rounded-full border-black placeholder:text-black placeholder:opacity-70 placeholder:font-normal outline-none max-w-20 h-10 pl-4 pr-3 text-sm font-semibold focus:border-sky-500 "
+                            />
+                        </div>
+                        <Input required={true} minLength={6} name={'password'} placeholder="Enter Password" type='password' />
                         <div className="w-full">
                             <LongWidthBnt isLoading={isLoading} title='Login' className='w-full max-md:hidden' />
                             <Button isLoading={isLoading} title='Login' className='md:hidden w-full border-2' />

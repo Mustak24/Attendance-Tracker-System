@@ -13,6 +13,7 @@ import { TypingHeading } from "@/Components/Heading";
 import { HiOutlineLogout } from "react-icons/hi";
 import { Popover, PopoverOnHover } from "@/Components/Popover";
 import Hr from "@/Components/Hr";
+import logoutUser from "@/Functions/users/logoutUser";
 
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
 
   const {setAlert} = useContext(_AppContext);
 
-  const [isLoad, setLoad] = useState(true);
+  const [isLoad, setLoad] = useState(false);
   const [attendanceStatus, setAttendanceStatus] = useState('Wait ...');
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setLoading] = useState(false);
@@ -44,8 +45,10 @@ export default function Home() {
     })
   }
 
-  function handleLogout(){
+  async function handleLogout(){
+    let {miss, alert} = await logoutUser(localStorage.getItem('user-token'));
     localStorage.removeItem('user-token')
+    if(miss) setAlert((alerts) => [...alerts, alert]);
     return router.push('/');
   }
 

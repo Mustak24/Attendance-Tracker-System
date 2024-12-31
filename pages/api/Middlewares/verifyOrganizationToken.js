@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+
 import organizationModel from '../Models/organizationModel';
 import alertMsg from '@/Functions/alertMsg';
 
@@ -11,10 +11,7 @@ export default async function verifyOrganizationToken(req, res, next){
     token = token.split(' ')[1];
 
     try{
-        let organizationId = (jwt.verify(token, process.env.JWT_KEY)).id;
-        let organization = await organizationModel.findById(organizationId);
-
-        if(!organization) return res.json({alert: alertMsg('invalid-token'), miss: false});
+        let organization = await organizationModel.isValidToken(token);
         req.organization = organization;
         return next(req, res);
     } catch(error){

@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import vaildTokenModel from './vaildTokenModel';
 
 const organizationSchema = new mongoose.Schema({
     name: {
@@ -42,8 +43,31 @@ const organizationSchema = new mongoose.Schema({
     },
 });
 
-organizationSchema.methods.createToken = function(){
-    return jwt.sign({id: this._id}, process.env.JWT_KEY);
+organizationSchema.methods.createToken = async function(){
+    await vaildTokenModel.deleteMany({id: this._id, role: 'organization'});
+    let token = await vaildTokenModel.create({id: this._id, role: 'organization'});
+    return jwt.sign({id: token._id}, process.env.JWT_KEY);
+}
+
+organizationSchema.statics.isValidToken = async function(token){
+    token = jwt.verify(token, process.env.JWT_KEY);
+
+    let vaildToken = await vaildTokenModel.findById(token.id);
+    if(!(vaildToken && vaildToken.role === 'organization')) throw new Error('invalid-token');
+    
+    let organization = await this.findById(vaildToken.id);
+    if(!organization) throw new Error('invalid-token');
+    
+    return organization;
+}
+
+organizationSchema.statics.removeToken = async function(token){
+    token = jwt.verify(token, process.env.JWT_KEY);
+
+    let vaildToken = await vaildTokenModel.findById(token.id);
+    if(!(vaildToken && vaildToken.role === 'organization')) throw new Error('invalid-token');
+    
+    await vaildTokenModel.findByIdAndDelete(token.id);
 }
 
 organizationSchema.methods.comparePassword = function(password){

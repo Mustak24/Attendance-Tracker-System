@@ -8,10 +8,10 @@ async function next(req, res){
 
     let {name, username, password, organizationNo} = req.body;
     if(!(name && username && password && organizationNo)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
+    
     username = username.split(' ');
-
-    if(!username[1] || username[1] != process.env.ORGANIZATION_USERNAME_KEY) return res.json({alert: alertMsg('invalid-info'), miss: false});
-    username = username[0];
+    if(username.length < 2 || username[username.length-1] != process.env.ORGANIZATION_USERNAME_KEY) return res.json({alert: alertMsg('invalid-info'), miss: false});
+    username = username.slice(0, username.length-1).join(' ');
 
     try{
         let organization = await organizationModel.findOne({username});
@@ -26,7 +26,7 @@ async function next(req, res){
             ip
         }); 
 
-        let token = organization.createToken();
+        let token = await organization.createToken();
 
         organization = organization.toObject();
         delete organization.password

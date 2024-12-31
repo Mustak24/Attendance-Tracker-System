@@ -13,6 +13,7 @@ import { HiOutlineLogout } from "react-icons/hi";
 import { LuCalendarClock, LuUserRoundPlus } from "react-icons/lu";
 import getAttendanceInfo from "@/Functions/organization/getAttendanceInfo";
 import { MdOutlineDownloadForOffline } from "react-icons/md";
+import logoutOrganization from "@/Functions/organization/logoutOrganization";
 
 export default function Index(){
 
@@ -62,8 +63,10 @@ export default function Index(){
 
 
 
-    function handleLogout(){
+    async function handleLogout(){
+        let {miss, alert} = await logoutOrganization(localStorage.getItem('organization-token'));
         localStorage.removeItem('organization-token');
+        if(miss) setAlert((alerts) => [...alerts, alert]);
         router.push('/');
     }
 

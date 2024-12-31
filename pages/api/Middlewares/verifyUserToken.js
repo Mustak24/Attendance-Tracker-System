@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+
 import userModel from '../Models/userModel';
 import alertMsg from '@/Functions/alertMsg';
 
@@ -11,12 +11,9 @@ export default async function verifyUserToken(req, res, next){
     token = token.split(' ')[1];
 
     try{
-        let userId = (jwt.verify(token, process.env.JWT_KEY)).id;
-        let user = await userModel.findById(userId);
-
-        if(!user) return res.json({alert: alertMsg('invalid-token'), miss: false});
-
+        let user = await userModel.isValidToken(token);
         req.user = user;
+        
         return next(req, res);
     } catch(error){
         return res.json({alert: alertMsg('invalid-token'), miss: false, error});

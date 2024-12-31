@@ -4,6 +4,8 @@ import organizationModel from "../Models/organizationModel";
 
 
 async function next(req, res) {
+    if(req.method != 'POST') return res.json({alert: alertMsg('invalid-req-method'), miss: false});
+    
     let {username, password} = req.body;
 
     if(!(username && password)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
@@ -11,7 +13,7 @@ async function next(req, res) {
         let organization = await organizationModel.findOne({username}).select('+password');
         if(!(organization && organization.comparePassword(password))) return res.json({alert: alertMsg('invalid-info'), miss: false});
 
-        let token = organization.createToken();
+        let token = await organization.createToken();
         
         organization = organization.toObject();
         delete organization.password
