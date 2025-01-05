@@ -22,16 +22,19 @@ const attendanceSchema = new mongoose.Schema({
 });
 
 attendanceSchema.methods.markAttendance = async function(isPresent, date=null){
-    date = date || new Date().toLocaleDateString().split('/');
+    if(!date){
+        let time = new Date().toLocaleDateString().split('/');
+        date = `${time[1]}/${time[0]}/${time[2]}`;
+    }
     
-    this.status.set(date.join('/'), isPresent ? 'present' : 'absent');
+    this.status.set(date, isPresent ? 'present' : 'absent');
 
     await this.save();
 }
 
 attendanceSchema.methods.getTodayStatus = function(){
-    let date = new Date().toLocaleDateString();
-    return this.status.get(date) || 'not mark';
+    let date = new Date().toLocaleDateString().split('/');
+    return this.status.get(`${date[1]}/${date[0]}/${date[2]}`) || 'not mark';
 }
 
 attendanceSchema.methods.addProperty = function(key, value){
@@ -72,7 +75,10 @@ attendanceSchema.methods.isValidIp = async function(){
 
 
 attendanceSchema.statics.getTotalPresentUsers = async function(organizationId, date=null){
-    date = date || new Date().toLocaleDateString();
+    if(!date){
+        let time = new Date().toLocaleDateString().split('/');
+        date = `${time[1]}/${time[0]}/${time[2]}`;
+    }
     let attendaceInfo = await this.find({organizationId});
     let presentUsers = [];
     for(let attendance of attendaceInfo){

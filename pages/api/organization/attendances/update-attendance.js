@@ -8,9 +8,7 @@ async function next(req, res) {
     if(req.method != 'POST') return res.json({alert: alertMsg('invalid-req-method'), miss: false});
 
     let {time, attendanceInfo} = req.body;
-    if(!(time && attendanceInfo && time[0] && time[1] && time[2])) return res.json({alert: alertMsg('incomplite-info'), miss: false});
-
-    time = time.map(e => String(e))
+    if(!(time && attendanceInfo)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
 
     let {organization} = req; 
     try{

@@ -64,7 +64,7 @@ export default function UpdateAttendance(){
 
     async function hendalForm(){
         let formData = Object.fromEntries(new FormData(attendaceForm.current));
-        let time = [date, mounth, year];
+        let time = [date, mounth, year].join('/');
 
         let {alert} = await updateAttendance(localStorage.getItem('organization-token'), formData, time);
         setAlert((alerts) => [...alerts, alert]);
