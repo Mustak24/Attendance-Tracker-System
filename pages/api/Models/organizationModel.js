@@ -28,13 +28,13 @@ const organizationSchema = new mongoose.Schema({
         require: true
     },
     attendanceTime: {
-        hr: {
-            type: Number,
-            default: 20
+        time: {
+            type: String,
+            default: '21:00'
         },
-        min: {
+        duration: {
             type: Number,
-            default: 15
+            default: 1
         }
     },
     time: {
@@ -42,6 +42,13 @@ const organizationSchema = new mongoose.Schema({
         default: Date.now
     },
 });
+
+organizationSchema.methods.getAttendanceTimeRange = function(){
+    let {time, duration} = this.attendanceTime;
+    time = time.split(':').map(Number);
+    time = time[0]+time[1]/60
+    return [time, time+duration, duration]
+}
 
 organizationSchema.methods.createToken = async function(){
     await vaildTokenModel.deleteMany({id: this._id, role: 'organization'});

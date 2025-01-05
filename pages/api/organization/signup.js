@@ -10,6 +10,7 @@ async function next(req, res){
     if(!(name && username && password && organizationNo)) return res.json({alert: alertMsg('incomplite-info'), miss: false});
     
     username = username.split(' ');
+    console.log(username)
     if(username.length < 2 || username[username.length-1] != process.env.ORGANIZATION_USERNAME_KEY) return res.json({alert: alertMsg('invalid-info'), miss: false});
     username = username.slice(0, username.length-1).join(' ');
 

@@ -23,8 +23,8 @@ const attendanceSchema = new mongoose.Schema({
 
 attendanceSchema.methods.markAttendance = async function(isPresent, date=null){
     if(!date){
-        let time = new Date().toLocaleDateString().split('/');
-        date = `${time[1]}/${time[0]}/${time[2]}`;
+        let time = new Date();
+        date = [time.getDate(), time.getMonth()+1, time.getFullYear()].join('/');
     }
     
     this.status.set(date, isPresent ? 'present' : 'absent');
@@ -33,8 +33,9 @@ attendanceSchema.methods.markAttendance = async function(isPresent, date=null){
 }
 
 attendanceSchema.methods.getTodayStatus = function(){
-    let date = new Date().toLocaleDateString().split('/');
-    return this.status.get(`${date[1]}/${date[0]}/${date[2]}`) || 'not mark';
+    let time = new Date();
+    let date = [time.getDate(), time.getMonth()+1, time.getFullYear()].join('/');
+    return this.status.get(date) || 'not mark';
 }
 
 attendanceSchema.methods.addProperty = function(key, value){
@@ -76,8 +77,8 @@ attendanceSchema.methods.isValidIp = async function(){
 
 attendanceSchema.statics.getTotalPresentUsers = async function(organizationId, date=null){
     if(!date){
-        let time = new Date().toLocaleDateString().split('/');
-        date = `${time[1]}/${time[0]}/${time[2]}`;
+        let time = new Date();
+        date = [time.getDate(), time.getMonth()+1, time.getFullYear()].join('/');
     }
     let attendaceInfo = await this.find({organizationId});
     let presentUsers = [];

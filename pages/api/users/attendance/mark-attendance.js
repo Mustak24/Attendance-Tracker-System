@@ -8,23 +8,37 @@ import organizationModel from "../../Models/organizationModel";
 async function next(req, res) {
     if(req.method != 'GET') return res.json({msg: 'Method not allowed', miss: false});
 
-    let time = new Date().toTimeString().split(' ')[0].split(':');
+    let time = new Date();
 
     let user = req.user;
-    let date = new Date().toLocaleDateString().split('/');
+    let date = [time.getDate(), time.getMonth()+1, time.getFullYear()].join('/');
+    let userTime = time.getHours() + time.getMinutes()/60;
 
     try{
-        let {attendanceTime} = await organizationModel.findById(user.organizationId);
-        let {hr, min} = attendanceTime
-        
-        if(time[0] > hr) return res.json({alert: {type: 'error', msg: `You are too leat attendance time is left { ${hr}:${min} to ${hr+1}:${min} }.`}, miss: false});
-        if(time[0] < hr) return res.json({alert: {type: 'error', msg: `You can only mark your attendance before ${hr}:${min}`}, miss: false});
+        let organization = await organizationModel.findById(user.organizationId);
+        let attendanceTimeInfo = organization.getAttendanceTimeRange();
+
+        if(userTime > attendanceTimeInfo[1]) return res.json({
+            alert: {
+                type: 'error', 
+                msg: `You are too leat attendance time is ${organization.attendanceTime.time} to ${parseInt(attendanceTimeInfo[2]*60)}min. duration.`
+            }, 
+            miss: false
+        });
+
+        if(userTime < attendanceTimeInfo[0]) return res.json({
+            alert: {
+                type: 'error', 
+                msg: `You can only mark your attendance after ${organization.attendanceTime.time}`
+            }, 
+            miss: false
+        });
 
 
         let attendance = await attendanceModel.findOne({userId: user._id});
         if(!attendance) return res.json({alert: {type: 'error', msg: 'Attendance not found'}, miss: false});
         
-        let attendanceStatus = attendance.status.get(date.join('/'));
+        let attendanceStatus = attendance.status.get(date);
 
         if(attendanceStatus) return res.json({alert: {type: 'info', msg: 'Attendace is already marked.'}, miss: true, attendanceStatus})
 

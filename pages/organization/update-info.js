@@ -47,7 +47,6 @@ export default function Login(){
         
         setTimeUpdating(true);
         let formData = Object.fromEntries(new FormData(e.target))
-        
         let {alert} = await updateAttendaceTime(localStorage.getItem('organization-token'), formData);
         setTimeUpdating(false);
 
@@ -104,27 +103,25 @@ export default function Login(){
                             <div className="border-b-2 w-fit pl-1 pr-4">For Update Attendence Time</div>
                             <div className='text-xs px-2'>
                                 <div>Enter Time ( 23 hr )</div>
-                                <div className="my-2 flex items-center text-sm relative">
+                                <div className="my-2 flex flex-wrap items-center text-sm relative gap-4">
                                     <input 
-                                        type="number"
-                                        max={23}
-                                        min={0}
-                                        name="hr"
-                                        placeholder="Hr"
+                                        type="time"
+                                        name="time"
                                         required
-                                        className="border-2 text-center border-black rounded-full rounded-r-none h-10 min-w-0 px-1 flex-1" 
+                                        className="border-2 text-center border-black rounded-full h-10 min-w-20 px-1 flex-1" 
                                     />
-                                    <span className="mx-1">:</span>
-                                    <input 
-                                        type="number"
-                                        max={59}
-                                        min={0}
-                                        name="min"
-                                        placeholder="Min"
-                                        required
-                                        className="border-2 text-center border-black rounded-full rounded-l-none h-10 min-w-0 px-1 flex-1" 
-                                    />
-                                    <Button isLoading={isTimeUpdating} className="text-xs ml-3 shrink-0">Update</Button>
+                                    <label className="flex-1 px-1 relative after:content-['min'] after:text-xs after:absolute after:left-5 after:bg-black after:text-white after:rounded-full after:px-2 after:py-[1px] after:translate-y-[-50%]">
+                                        <input 
+                                            type="number"
+                                            max={119}
+                                            min={0}
+                                            name="duration"
+                                            placeholder="Duration"
+                                            required
+                                            className="border-2 text-center border-black rounded-full h-10 min-w-24 px-2 w-full" 
+                                        />
+                                    </label>
+                                    <Button isLoading={isTimeUpdating} className="text-xs shrink-0 flex-1">Update</Button>
                                 </div>
                             </div>
                         </form>

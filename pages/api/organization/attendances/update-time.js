@@ -7,11 +7,11 @@ async function next(req, res) {
     if(req.method != 'POST') return res.json({alert: alertMsg('invalid-req-method'), miss: false});
     
     let {organization} = req;
-    let {hr, min} = req.body;
-    if(!(hr && min)) return res.json({alert: alertMsg('incomplit-info'), miss: false});
+    let {time, duration} = req.body;
+    if(!(time && duration)) return res.json({alert: alertMsg('incomplit-info'), miss: false});
 
     try{
-        await organizationModel.findByIdAndUpdate(organization._id, {attendanceTime: {hr, min}});
+        await organizationModel.findByIdAndUpdate(organization._id, {attendanceTime: {time, duration: duration/60}});
         return res.json({alert: {type: 'success', msg: 'Attendence time will be updated.'}, miss: true});
     } catch(error){
         return res.json({alert: alertMsg('internal-server-error'), miss: false, error})

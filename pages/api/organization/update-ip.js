@@ -2,6 +2,7 @@ import alertMsg from "@/Functions/alertMsg";
 import connetToDb from "../Middlewares/connectToDb";
 import verifyOrganizationToken from "../Middlewares/verifyOrganizationToken";
 import organizationModel from "../Models/organizationModel";
+import { getIp } from "@/Functions/miniFuntions";
 
 async function next(req, res) {
     if(req.method != 'POST') return res.json({alert: alertMsg('invalid-req-method'), miss: false});
@@ -9,6 +10,8 @@ async function next(req, res) {
     let {organization} = req;
     let {ip} = req.body;
     if(!ip) return res.json({alert: alertMsg('incomplit-info'), miss: false});
+
+    if(ip != await getIp()) return res.json({miss: false, alert: {type: 'error', msg: 'Enter IP is not your IP.'}});
 
     try{
         await organizationModel.findByIdAndUpdate(organization._id, {ip});

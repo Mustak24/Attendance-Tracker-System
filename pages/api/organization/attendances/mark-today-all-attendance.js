@@ -7,15 +7,21 @@ import attendanceModel from "../../Models/attendanceModel";
 async function next(req, res) {
     if(req.method != 'GET') return res.json({alert: alertMsg('invalid-req-method'), miss: false});
 
-    let time = new Date();
-    if(time.toTimeString().split(':')[0] < 21) return res.json({alert: {type: 'info', msg: 'Defaul attendance time still left.'}, miss: false});
+    let Time = new Date();
+    let date = [Time.getDate(), Time.getMonth()+1, Time.getFullYear()].join('/')
 
     let {organization} = req;
+    let {time, duration} = organization.attendanceTime;
+
+    time = time.split(':').map(Number)
+    let attendanceTime = time[0] + time[1]/60
+
+    if((Time.getHours + Time.getMinutes/60) < attendanceTime + duration) return res.json({alert: {type: 'info', msg: 'Defaul attendance time still left.'}, miss: false});
     
     try{
         let attendances = await attendanceModel.find({organizationId: organization._id});
         for(let attendance of attendances){
-            if(attendance.status.get(time.toLocaleDateString()) != 'present'){
+            if(attendance.status.get(date) != 'present'){
                 await attendance.markAttendance(false);
             }
         }
