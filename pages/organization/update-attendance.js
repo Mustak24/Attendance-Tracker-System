@@ -11,6 +11,8 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 import { LuCalendarClock } from "react-icons/lu";
 import { TbCalendarClock } from "react-icons/tb";
+import { LuClipboardCopy } from "react-icons/lu";
+import getTotalPresentUsers from "@/Functions/organization/getTotalPresentUsers";
 
 export default function UpdateAttendance(){
 
@@ -24,6 +26,7 @@ export default function UpdateAttendance(){
     const [date, setDate] = useState('');
     const [usersInfo, setUsersInfo] = useState([]);
     const [updateInfo, setUpdateInfo] = useState(0);
+    const [totalPresent, setTotalPresent] = useState(0);
 
     const attendaceForm = useRef(null);
 
@@ -38,7 +41,7 @@ export default function UpdateAttendance(){
 
     async function handleGetUsersInfo(){
         let {miss, usersInfo} = await getUsersInfo(localStorage.getItem('organization-token'));
-        if(miss) return setUsersInfo(usersInfo);
+        if(miss) setUsersInfo(usersInfo);
     }
 
     useEffect(() => {
@@ -49,6 +52,14 @@ export default function UpdateAttendance(){
 
         verify();
     }, []);
+
+    useEffect(() => {
+        if(!(date && mounth && year)) return;
+        getTotalPresentUsers(localStorage.getItem('organization-token'), `${Number(date)}/${Number(mounth)}/${year}`)
+        .then(({miss, totalPresentUsers}) => {
+            if(miss) setTotalPresent(totalPresentUsers?.length)
+        })
+    }, [date, updateInfo]);
 
 
     async function hendalForm(){
@@ -63,6 +74,23 @@ export default function UpdateAttendance(){
         <div className="w-full h-screen overflow-x-hidden py-5 px-2 sm:p-10 pb-10">
             <ShowIf when={isLoad} isLoading={true}>
                 <div className="text-2xl font-bold font-sans">Attendance Update Form</div>
+                <Hr className="h-[2px] my-[2px]"/>
+                <div className="text-xs relative mt-2 flex items-start gap-5 font-sans">
+                    <div id="attendance-info">
+                        <div>Date {`( ${date} / ${mounth} / ${year} )`}</div>
+                        <div>Total: {usersInfo.length}</div>
+                        <div>Present: {totalPresent}</div>
+                        <div>Absent: {usersInfo.length - totalPresent}</div>
+                    </div>
+                    <button className="text-2xl" onClick={() => {
+                        let text = document.getElementById('attendance-info')?.innerText;
+                        navigator.clipboard.writeText(text).then(() => {
+                            setAlert(alerts => [...alerts, {type: 'info', msg: 'Text Was Copyed.'}]);
+                        })
+                    }}>
+                        <LuClipboardCopy />
+                    </button>
+                </div>
                 <Hr/>
                 <form ref={attendaceForm} onSubmit={hendalForm}>
                     <div className="flex flex-col gap-1 w-fit mb-10">    
@@ -76,7 +104,7 @@ export default function UpdateAttendance(){
                                     type="text" 
                                     maxLength={2}
                                     className="w-full text-center outline-none bg-transparent border-none" 
-                                    onBlur={(e) => setDate((date) => date > 1 ? String(date).padStart(2, '0') : '01')}
+                                    onBlur={() => setDate((date) => date > 1 ? String(date).padStart(2, '0') : '01')}
                                     onChange={(e) => {
                                         let {value} = e.target
                                         if(!isNumber(value)) return;
@@ -91,7 +119,7 @@ export default function UpdateAttendance(){
                                     type="text" 
                                     maxLength={2}
                                     className="w-full text-center outline-none bg-transparent border-none" 
-                                    onBlur={(e) => setMounth((mounth) => mounth > 1 ? mounth.padStart(2, '0') : '01')}
+                                    onBlur={() => setMounth((mounth) => mounth > 1 ? mounth.padStart(2, '0') : '01')}
                                     onChange={(e) => {
                                         let {value} = e.target
                                         if(!isNumber(value)) return;
@@ -106,7 +134,8 @@ export default function UpdateAttendance(){
                                     maxLength={4} 
                                     className="w-full text-center outline-none bg-transparent border-none" 
                                     onBlur={(e) => {
-                                        if(e.target.value < 2005) return setYear(new Date().getFullYear())
+                                        if(e.target.value < 2005) 
+                                            return setYear(new Date().getFullYear())
                                     }}
                                     onChange={(e) => {
                                         let {value} = e.target;
@@ -141,6 +170,7 @@ export default function UpdateAttendance(){
                                         year={year}
                                         date={date}
                                         updateInfo={updateInfo}
+                                        setTotalPresent={setTotalPresent}
                                     />
                                     )
                                 })
@@ -158,7 +188,7 @@ export default function UpdateAttendance(){
 }
 
 
-function AttendaceRow({index, name, roomNo, attendanceId, mounth, year, date, updateInfo}){
+function AttendaceRow({index, name, roomNo, attendanceId, mounth, year, date, updateInfo, setTotalPresent}){
 
     const [presentDays, setPresentDays] = useState([]);;
     const [isUpdate, setUpdate] = useState(false);
@@ -192,7 +222,7 @@ function AttendaceRow({index, name, roomNo, attendanceId, mounth, year, date, up
     }
 
     useEffect(() => {
-        hendalIsPresent()
+        hendalIsPresent();
     }, [date, presentDays]);
 
     useEffect(() => {
@@ -247,7 +277,14 @@ function AttendaceRow({index, name, roomNo, attendanceId, mounth, year, date, up
                             id={attendanceId}
                             type="checkbox" 
                             checked={isPresent}
-                            onChange={() => setIsPresent(() => !isPresent)}
+                            onChange={() => { 
+                                setIsPresent((isPresent) => !isPresent)
+                                if(isPresent){
+                                    setTotalPresent(present => present - 1)
+                                } else {
+                                    setTotalPresent(present => present + 1)
+                                }
+                            }}
                         />
 
                         <input hidden name={attendanceId} value={isPresent ? 'present' : 'absent'}/>

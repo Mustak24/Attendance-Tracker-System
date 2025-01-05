@@ -91,12 +91,20 @@ export default function Home() {
               <div className="self-start">
                 <div className="font-serif transition-all text-4xl md:text-7xl font-semibold">
                   <div className="">Hello,</div>
-                  <TypingHeading className="capitalize" speed={120}>{userInfo.name}</TypingHeading>
+                  
+                  <div className="max-sm:hidden">
+                    <TypingHeading className="capitalize" speed={120}>{userInfo?.name}</TypingHeading>
+                  </div>
+                  <div className="sm:hidden">{
+                      (userInfo?.name || '').length < 6 ?
+                        userInfo.name
+                        : userInfo.name.slice(0,6) + '...'
+                  }</div>
                 </div>
 
                 <Hr/>
 
-                <div className="max-sm:mt-2 mt-5 flex flex-col gap-1 text-white">
+                <div className="max-sm:mt-2 mt-5 flex flex-col gap-1">
                   <div className="text-[3vmax] font-sans font-semibold">Your today attendance Status is,</div>
                   <div className="capitalize relative w-fit font-semibold h-6 [&_div]:rounded-md [&_div]:px-4 [&_div]:py-1 after:content-[''] after:absolute after:z-[1] after:size-3 after:bg-sky-500 after:box-content after:border-[4px] after:border-blue-200 after:top-1 after:right-1 after:rounded-full after:translate-x-[50%] after:translate-y-[-50%] before:content-[''] before:z-[10] before:absolute before:size-4 before:bg-sky-100 before:top-1 before:right-1 before:rounded-full before:translate-x-[50%] before:translate-y-[-50%] before:animate-ping before:origin-[0%_100%]">
                     <ShowIf when={attendanceStatus != 'present' && attendanceStatus != 'absent'}>

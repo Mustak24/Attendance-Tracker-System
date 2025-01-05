@@ -12,17 +12,6 @@ const attendanceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         res: 'organization'
     },
-    attendances: {
-        type: Map,
-        of: {
-            type: Map,
-            of: {
-                type: Map,
-                of: Object
-            }
-        },
-        default: new Map()
-    },
     status: {
         type: Map,
         of: {
@@ -35,18 +24,8 @@ const attendanceSchema = new mongoose.Schema({
 attendanceSchema.methods.markAttendance = async function(isPresent, date=null){
     date = date || new Date().toLocaleDateString().split('/');
     
-    this.status.set(date.join('/'), isPresent ? 'present' : 'absent')
+    this.status.set(date.join('/'), isPresent ? 'present' : 'absent');
 
-    if(!this.attendances.has(date[2])) this.attendances.set(date[2], new Map());
-
-    if(!this.attendances.get(date[2]).has(date[1])) this.attendances.get(date[2]).set(date[1], new Map());
-
-    this.attendances.get(date[2]).get(date[1]).set(date[0], {
-        status: isPresent ? 'present' : 'absent',
-        isPresent,
-        time: new Date()
-    });
-    
     await this.save();
 }
 
@@ -89,6 +68,17 @@ attendanceSchema.methods.isValidIp = async function(){
     let userIP = await getIp();
     let organization = await organizationModel.findById(this.organizationId);
     return Boolean(organization.ip == userIP);
+}
+
+
+attendanceSchema.statics.getTotalPresentUsers = async function(organizationId, date=null){
+    date = date || new Date().toLocaleDateString();
+    let attendaceInfo = await this.find({organizationId});
+    let presentUsers = [];
+    for(let attendance of attendaceInfo){
+        if(attendance?.status.get(date) == 'present') presentUsers.push(attendance.userId);
+    }
+    return presentUsers;
 }
 
 

@@ -105,10 +105,14 @@ export default function Index(){
                     <div className="flex gap-5 sm:gap-10">
                         <div>
                             <div>Hey,</div>
-                            <div className="text-5xl capitalize">{
-                                (organizationInfo?.name || '').length < 10 ? 
+                            
+                            <div className="text-5xl capitalize max-sm:hidden">
+                                {organizationInfo?.name || ''}
+                            </div>
+                            <div className="text-5xl capitalize sm:hidden">{
+                                (organizationInfo?.name || '').length < 6 ? 
                                     organizationInfo.name
-                                    : organizationInfo.name.slice(0,10) + '...'
+                                    : organizationInfo.name.slice(0,6) + '...'
                             }</div>
                         </div>
                         <div className="text-xs self-end">
