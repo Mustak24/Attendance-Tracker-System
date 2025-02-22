@@ -1,44 +1,44 @@
-import { delay } from "@/Functions/miniFuntions";
-import { Children, useEffect, useRef, useState } from "react"
+
+import { useEffect, useRef, useState } from "react"
 
 
 export default function AutoSlider({children, speed=5, effectTime=500, color='white', size=20}){
 
-    const [childs, setChilds] = useState([]);
     const [effectBoxs, setEffectBoxs] = useState([]);
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const effectBox = useRef(null);
 
-    function sliderEffect(){
-        if(!effectBox.current) return;
+    function delay(time){
+        return new Promise(res => {
+            setTimeout(() => {
+                res(true);
+            }, time);
+        });
+    }
 
-        effectBox.current.childNodes.forEach(e => {
-                e.classList.remove('opacity-0')
-                e.classList.add('opacity-100');
+    async function sliderEffect(){
+        if(!effectBox.current) return;
+        effectBox.current.style.scale = 1;
+        effectBox.current.childNodes.forEach(async e => {
+                e.style.scale = 1;
+                e.style.opacity = 1;
                 setTimeout(() => {
-                    e.classList.remove('opacity-100');
-                    e.classList.add('opacity-0');
+                    e.style.scale = 0;
+                    e.style.opacity = .5;
                 }, effectTime + 1100)
         })
+        await delay((effectTime+1050)*2 );
+        effectBox.current.style.scale = 0;
     }
 
     async function handelSliding(){
         sliderEffect();
-
         await delay(effectTime + 1000);
-
-        setChilds((child) => {
-            let temp = []
-            for(let i=0; i<child.length-1; i++){
-                temp.push(child[i+1])
-            }
-            temp.push(child[0]);
-            return temp;
-        })
+        setActiveIndex(pre => (pre+1)%children.length);
     }
 
     useEffect(() => {
-        setChilds(Children.toArray(children));
 
         handelEffectBoxs();
         window.addEventListener('resize', handelEffectBoxs);
@@ -67,31 +67,28 @@ export default function AutoSlider({children, speed=5, effectTime=500, color='wh
 
     return (<>
         <div className="w-full h-full flex items-center relative overflow-hidden">
-            {
-                childs.map((child, index)=> {
-                    return (
-                        <div key={index} className="shrink-0 w-full h-full relative">{child}</div>
-                    )
-                })
-            }
-            <div ref={effectBox} className="effect absolute w-full h-full flex flex-wrap overflow-hidden">
-            {
-                effectBoxs.map((delay,i) => {
-                    return(
-                        <div 
-                            key={i} 
-                            className="aspect-square flex-1 opacity-0" 
-                            style={{
-                                transition: `all ${effectTime}ms ${delay}s`,
-                                backgroundColor: color,
-                                width: `${size}px`,
-                                height: `${size}px`
-                            }}
-                        ></div>
-                    )
-                })
-            }
-            </div>
+            <div className="hidden">{children[(activeIndex+1)%children.length]}</div>
+                {children[activeIndex]}
+                <div ref={effectBox} className="effect z-2 absolute w-full h-full flex flex-wrap overflow-hidden" style={{scale: 0}}>
+                {
+                    effectBoxs.map((delay,i) => {
+                        return(
+                            <div 
+                                key={i} 
+                                className="aspect-square flex-1" 
+                                style={{
+                                    transition: `all ${effectTime}ms ${delay}s`,
+                                    backgroundColor: color,
+                                    width: `${size}px`,
+                                    height: `${size}px`,
+                                    opacity: 0,
+                                    scale: 0
+                                }}
+                            ></div>
+                        )
+                    })
+                }
+                </div>
         </div>
     </>)
 }

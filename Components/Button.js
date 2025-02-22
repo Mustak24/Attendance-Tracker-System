@@ -11,7 +11,7 @@ export default function Button({children, isLoading=false, loadingInnerHTML='Wai
     useEffect(() => {
         if(!button.current) return;
         setScale(button.current.offsetWidth/4)
-    }, [button.current]);
+    }, [button]);
     
     return (
         <button ref={button}
